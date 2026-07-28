@@ -1,0 +1,54 @@
+Report created: 
+	26-07-2024	00:35:23
+
+Project name: animation 2.aep
+
+Source files collected to: 
+	E:\rough work\freelance\Kurashi\logo\Final\the three amigos AE files
+
+Source files collected: All
+
+Collected comps:  
+	the three amigos animation
+	Group 2
+	Group 2
+	Group 1
+	Artboard 1
+	Pre-comp 1
+	Pre-comp 2
+	
+Number of collected files:  3
+
+Size of collected files:  21.4 MB
+
+Collected source files: 
+	C:\Users\eseth\Videos\4K Video Downloader+\Video effect source - Shape Elements No Copyright video.mp4
+	E:\rough work\freelance\Kurashi\logo\Final\the three amigos animation.psd
+	E:\TEMP\Background.mp4
+	
+Rendering plug-ins:
+	Classic 3D
+	
+Effects used:  8
+
+Effect:  
+	
+Effect:  Fill
+	
+Effect:  Gaussian Blur
+	
+Effect:  Gradient Ramp
+	
+Effect:  Invert
+	
+Effect:  Transform
+	
+Effect:  UnMult
+	
+Effect:  Wiggle - position
+	
+
+Layer:  Text Layer
+	External dependencies:  
+		Font family: “MADE TOMMY”, Font style: “Medium”
+
