@@ -9,6 +9,14 @@ interface ClientLogoProps {
   mode: 'marquee' | 'avatar' | 'testimonial' | 'card'
   className?: string
   imgPaddingClass?: string
+  // Individual optical normalization props
+  maxWidth?: string
+  maxHeight?: string
+  scale?: number
+  opacity?: number
+  brightness?: number
+  contrast?: number
+  grayscale?: boolean
 }
 
 // Optical balancing helper to identify square or circle shapes
@@ -38,7 +46,14 @@ export default function ClientLogo({
   name,
   mode,
   className = '',
-  imgPaddingClass = ''
+  imgPaddingClass = '',
+  maxWidth,
+  maxHeight,
+  scale,
+  opacity,
+  brightness,
+  contrast,
+  grayscale = false
 }: ClientLogoProps) {
   const initials = name
     ? name
@@ -67,17 +82,37 @@ export default function ClientLogo({
 
   // 1. Hero Marquee Mode
   if (mode === 'marquee') {
-    const padding = isSquare ? 'p-3.5' : 'p-1'
+    const itemOpacity = opacity ?? 0.95
+    const itemScale = scale ?? 1.0
+    const itemContrast = contrast ?? 1.0
+    const itemBrightness = brightness ?? 1.0
+    const itemMaxHeight = maxHeight ?? (isSquare ? '44px' : '36px')
+    const itemMaxWidth = maxWidth ?? (isSquare ? '140px' : '160px')
+    const filterStyle = grayscale
+      ? `grayscale(100%) contrast(${itemContrast}) brightness(${itemBrightness})`
+      : `contrast(${itemContrast}) brightness(${itemBrightness})`
+
     return (
-      <div className="h-16 w-36 md:w-44 flex items-center justify-center group select-none">
-        <motion.img
-          src={logo}
-          alt={name}
-          className={`h-11 w-32 object-contain opacity-100 transition-all duration-300 object-center ${padding}`}
-          whileHover={{ scale: 1.08 }}
-          transition={{ duration: 0.2 }}
-          loading="lazy"
-        />
+      <div className="h-14 sm:h-16 md:h-18 flex items-center justify-center flex-shrink-0 group select-none px-4 sm:px-6">
+        <div
+          className="flex items-center justify-center transition-all duration-300 ease-out"
+          style={{
+            transform: `scale(${itemScale})`,
+          }}
+        >
+          <img
+            src={logo}
+            alt={name || 'Client logo'}
+            className="w-auto object-contain object-center group-hover:opacity-100 group-hover:scale-[1.02] transition-all duration-300 ease-out"
+            style={{
+              maxHeight: itemMaxHeight,
+              maxWidth: itemMaxWidth,
+              opacity: itemOpacity,
+              filter: filterStyle,
+            }}
+            loading="lazy"
+          />
+        </div>
       </div>
     )
   }

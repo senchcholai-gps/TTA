@@ -67,6 +67,15 @@
  * GPU-accelerated via transform. Zero layout impact.
  * Two independent rows: top scrolls left, bottom scrolls right.
  */
+@keyframes hero-marquee-loop {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
 @keyframes marquee-left {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }

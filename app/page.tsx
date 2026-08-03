@@ -3,7 +3,7 @@
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { ArrowRight } from 'lucide-react'
-import InfiniteMarquee from '@/components/InfiniteMarquee'
+import InfiniteMarquee, { MarqueeItem } from '@/components/InfiniteMarquee'
 import { motion, useReducedMotion } from 'framer-motion'
 import FadeInView from '@/components/ui/FadeInView'
 
@@ -29,18 +29,107 @@ import HeroShowcaseWrapper from '@/components/ui/HeroShowcaseWrapper'
 export default function Home() {
   const shouldReduceMotion = useReducedMotion()
 
-  const clientLogos = [
-    { name: 'UNICEF', logo: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/UNICEF-y6MyOOKAx8EQtBTbfXFwHWEikptNH4.png' },
-    { name: 'Maven Consulting', logo: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/New%20logo%20Red%20BG%20%202-2xIGVsI7DH9Rbn1BDQEYVhSvhCyaVO.png' },
-    { name: 'Jashmi Investment', logo: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Jashmi%20Investment%20OG-goF9QlKoFLmlXVsrVdJrtK2VkPa0jh.png' },
-    { name: 'Maven Education', logo: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/dubai%20white%20bg-kZiV7txXe4NrIVW2X3wvZf5pIPTtg5.png' },
-    { name: 'The Book Show', logo: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/BOOK%20SHOW%20BLACK%20%281%29%20%281%29-i10FK1CNukXX8qVzO2KYu8Y8El7ji2.png' },
-    { name: 'Why Tap', logo: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WHY%20TAP-VIHSkp7bSVxdPtM0AS58hlx8GqSADW.png' },
-    { name: 'Namma Yatri', logo: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/NAMMA%20YATRI-Yg2ysSqLXnZIWKVT4JNO4NcXRdrECN.png' },
-    { name: 'Ather', logo: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ATHER-sLXUFIZEC449oB5q2oL3R4oj0MhBAa.png' },
-    { name: 'Yellow Owl', logo: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/YELLOW%20OWL-wHKFoboqZgrZM3Lqv5us1LUgND6ucd.png' },
-    { name: 'Aara\'s Chicken', logo: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Logo%20alone%2001-hv3lhoxVZPNxauFyWA0pKKx1g3DI2L.jpeg' },
-    { name: 'Bhakthi Infinity', logo: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Bhakthi%20Infinity-EXAkVtLg1ZjS1g3rutMio3ZeGQsY5K.jpg' }
+  const clientLogos: MarqueeItem[] = [
+    {
+      name: 'UNICEF',
+      logo: '/logos/optimized/unicef.png',
+      maxHeight: '28px',
+      maxWidth: '130px',
+      scale: 0.82,
+      opacity: 0.95,
+      contrast: 1.0,
+      brightness: 1.0
+    },
+    {
+      name: 'Maven Consulting',
+      logo: '/logos/optimized/maven-consulting.png',
+      maxHeight: '40px',
+      maxWidth: '175px',
+      scale: 1.25,
+      opacity: 0.98,
+      contrast: 1.15,
+      brightness: 0.95
+    },
+    {
+      name: 'Jashmi Investment',
+      logo: '/logos/optimized/jashmi-investment.png',
+      maxHeight: '46px',
+      maxWidth: '130px',
+      scale: 1.30,
+      opacity: 0.98,
+      contrast: 1.20,
+      brightness: 0.90
+    },
+    {
+      name: 'Maven Education',
+      logo: '/logos/optimized/maven-education.png',
+      maxHeight: '40px',
+      maxWidth: '145px',
+      scale: 1.15,
+      opacity: 0.98,
+      contrast: 1.15,
+      brightness: 0.95
+    },
+    {
+      name: 'The Book Show',
+      logo: '/logos/optimized/the-book-show.png',
+      maxHeight: '46px',
+      maxWidth: '90px',
+      scale: 1.20,
+      opacity: 0.98,
+      contrast: 1.0,
+      brightness: 1.0
+    },
+    {
+      name: 'Why Tap',
+      logo: '/logos/optimized/why-tap.png',
+      maxHeight: '36px',
+      maxWidth: '135px',
+      scale: 1.05,
+      opacity: 0.95,
+      contrast: 1.0,
+      brightness: 1.0
+    },
+    {
+      name: 'Namma Yatri',
+      logo: '/logos/optimized/namma-yatri.png',
+      maxHeight: '36px',
+      maxWidth: '140px',
+      scale: 1.05,
+      opacity: 0.95,
+      contrast: 1.0,
+      brightness: 1.0
+    },
+    {
+      name: 'Ather',
+      logo: '/logos/optimized/ather.png',
+      maxHeight: '30px',
+      maxWidth: '135px',
+      scale: 0.92,
+      opacity: 0.95,
+      contrast: 1.0,
+      brightness: 1.0
+    },
+    {
+      name: 'Yellow Owl',
+      logo: '/logos/optimized/yellow-owl.png',
+      maxHeight: '30px',
+      maxWidth: '145px',
+      scale: 0.92,
+      opacity: 0.95,
+      contrast: 1.0,
+      brightness: 1.0
+    },
+    {
+      name: "Aara's Chicken",
+      logo: '/logos/optimized/aaras-chicken.png',
+      maxHeight: '44px',
+      maxWidth: '125px',
+      scale: 1.15,
+      opacity: 0.98,
+      contrast: 1.15,
+      brightness: 0.95
+    }
   ]
 
   const handleScrollToContact = () => {
