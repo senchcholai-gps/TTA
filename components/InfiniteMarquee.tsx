@@ -61,7 +61,7 @@ export default function InfiniteMarquee({ items, isLogoMode = false, speed = 30 
                 <motion.img
                   src={item.logo}
                   alt={item.name}
-                  className="h-10 w-auto object-contain opacity-100 transition-all duration-300"
+                  className="h-12 w-32 object-contain opacity-100 transition-all duration-300"
                   whileHover={!prefersReducedMotion ? { scale: 1.08 } : undefined}
                   transition={{ duration: 0.2 }}
                 />
@@ -72,7 +72,7 @@ export default function InfiniteMarquee({ items, isLogoMode = false, speed = 30 
                 <motion.img
                   src={item.logo}
                   alt={item.name}
-                  className="h-12 w-auto object-contain mb-2"
+                  className="h-12 w-24 object-contain mb-2"
                   whileHover={!prefersReducedMotion ? { scale: 1.1 } : undefined}
                 />
                 <p className="text-xs text-center text-neutral-black/85 font-medium">{item.name}</p>

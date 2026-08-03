@@ -113,6 +113,49 @@
   display: none;
 }
 
+/* ─── Animated Gradient Mesh ─────────────────────────────────────────────────
+ * A slowly morphing radial gradient overlay placed behind each section.
+ * Only uses brand colors at 2–5% opacity. Cycles every 30–40 s.
+ * GPU-accelerated via background-position (treated as a composite property).
+ */
+@keyframes mesh-shift {
+  0%   { background-position: 0% 0%, 100% 100%, 50% 50%; }
+  25%  { background-position: 30% 20%, 70% 80%, 20% 70%; }
+  50%  { background-position: 60% 40%, 40% 60%, 80% 30%; }
+  75%  { background-position: 20% 70%, 80% 30%, 60% 80%; }
+  100% { background-position: 0% 0%, 100% 100%, 50% 50%; }
+}
+
+.ambient-mesh {
+  will-change: opacity;
+  background-image:
+    radial-gradient(ellipse 70% 60% at var(--mx, 20%) var(--my, 30%), rgba(61, 0, 214, 0.03) 0%, transparent 65%),
+    radial-gradient(ellipse 65% 55% at var(--mx2, 80%) var(--my2, 70%), rgba(214, 0, 60, 0.025) 0%, transparent 65%),
+    radial-gradient(ellipse 55% 50% at 50% 50%, rgba(139, 0, 149, 0.02) 0%, transparent 70%);
+  background-size: 120% 120%, 110% 110%, 100% 100%;
+  animation: mesh-shift 36s ease-in-out infinite;
+}
+
+/* ─── Scroll Depth Drift ─────────────────────────────────────────────────────
+ * Very subtle upward drift applied to the background illustration wrapper.
+ * Controlled by a CSS custom property --scroll-y set from JS in the Canvas.
+ */
+.scroll-drift {
+  will-change: transform;
+}
+
+/* ─── Performance: Mobile ────────────────────────────────────────────────────
+ * On small screens (< 768 px) and/or low-end devices, disable ambient extras
+ * that aren't critical to reading experience. framer-motion hidden md:block
+ * already handles the canvas. This ensures mesh blobs don't run on mobile.
+ */
+@media (max-width: 767px) {
+  .ambient-mesh {
+    animation: none !important;
+    background-image: none !important;
+  }
+}
+
 /*
  * Reduced-motion: disable all CSS animations as a safety net.
  * framer-motion also handles this via useReducedMotion().

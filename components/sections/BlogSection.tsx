@@ -14,15 +14,15 @@ export default function BlogSection() {
   const previewPosts = blogPosts.slice(0, 3)
 
   return (
-    <section id="blog" className="py-24 bg-transparent overflow-hidden">
+    <section id="blog" className="py-14 sm:py-16 md:py-20 lg:py-24 bg-transparent overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Section Heading */}
-        <FadeInView className="text-center mb-16">
+        <FadeInView className="text-center mb-8 sm:mb-12 lg:mb-16">
           <span className="text-sm font-bold text-brand-purple tracking-widest uppercase">
             Blog &amp; Insights
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-neutral-black mt-2 mb-4">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-neutral-black mt-2 mb-4">
             Latest Marketing Insights
           </h2>
           <p className="text-lg text-neutral-black/75 max-w-2xl mx-auto">
@@ -32,7 +32,7 @@ export default function BlogSection() {
 
         {/* Blog Cards — stagger reveal */}
         <motion.div
-          className="grid md:grid-cols-3 gap-8 relative mb-12"
+          className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5 lg:gap-8 relative mb-12"
           variants={shouldReduceMotion ? undefined : staggerContainer}
           initial={shouldReduceMotion ? undefined : 'hidden'}
           whileInView={shouldReduceMotion ? undefined : 'visible'}
@@ -47,7 +47,7 @@ export default function BlogSection() {
               className="bg-white rounded-2xl border border-gray-150 overflow-hidden shadow-sm flex flex-col h-full hover:shadow-lg hover:border-brand-purple/20 transition-shadow duration-300 group"
             >
               {/* Cover Image */}
-              <div className="h-48 overflow-hidden relative bg-slate-100 flex-shrink-0">
+              <div className="h-32 sm:h-48 overflow-hidden relative bg-slate-100 flex-shrink-0">
                 <img
                   src={post.coverImage}
                   alt={post.title}
@@ -104,3 +104,4 @@ export default function BlogSection() {
     </section>
   )
 }
+

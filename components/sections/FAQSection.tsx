@@ -130,7 +130,7 @@ export default function FAQSection() {
   }
 
   return (
-    <section id="faq" className="py-24 bg-transparent overflow-hidden relative">
+    <section id="faq" className="py-14 sm:py-16 md:py-20 lg:py-24 bg-transparent overflow-hidden relative">
       {/* Decorative Drifting Background Radial Blobs (3-6% opacity, 20-30s loop) */}
       {!shouldReduceMotion && (
         <>
@@ -148,11 +148,11 @@ export default function FAQSection() {
       )}
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <FadeInView className="text-center mb-16">
+        <FadeInView className="text-center mb-8 sm:mb-12 lg:mb-16">
           <span className="text-sm font-bold text-brand-purple tracking-widest uppercase">
             FAQ
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-neutral-black mt-2 mb-4">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-neutral-black mt-2 mb-4">
             Frequently Asked Questions
           </h2>
           <p className="text-lg text-neutral-black/75 max-w-2xl mx-auto">
@@ -182,3 +182,4 @@ export default function FAQSection() {
     </section>
   )
 }
+

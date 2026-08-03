@@ -153,49 +153,78 @@ const TestimonialCard = memo(function TestimonialCard({
 })
 
 export default function TestimonialsSection() {
-  const [activeIndex, setActiveIndex] = useState(0)
+  const [isHovered, setIsHovered] = useState(false)
   const shouldReduceMotion = useReducedMotion()
-  const scrollContainerRef = useRef<HTMLDivElement>(null)
-
-  const handleScrollTo = (index: number) => {
-    setActiveIndex(index)
-    if (scrollContainerRef.current) {
-      const cardWidth = scrollContainerRef.current.children[0]?.clientWidth || 350
-      scrollContainerRef.current.scrollTo({
-        left: index * (cardWidth + 24),
-        behavior: 'smooth',
-      })
-    }
-  }
-
-  const handleNext = () => {
-    const nextIdx = (activeIndex + 1) % testimonialsData.length
-    handleScrollTo(nextIdx)
-  }
-
-  const handlePrev = () => {
-    const prevIdx = (activeIndex - 1 + testimonialsData.length) % testimonialsData.length
-    handleScrollTo(prevIdx)
-  }
 
   return (
     <section
       id="testimonials"
       className="py-24 bg-transparent overflow-hidden relative"
     >
-      {/* Decorative Background Drifting Glow */}
+      {/* Ambient background decorations */}
       {!shouldReduceMotion && (
-        <motion.div
-          animate={{ x: [-30, 30, -30] }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-r from-brand-red/5 via-brand-magenta/5 to-brand-purple/5 rounded-full blur-3xl pointer-events-none -z-10"
-        />
+        <>
+          {/* Primary drifting glow */}
+          <motion.div
+            animate={{ x: [-30, 30, -30], opacity: [0.04, 0.07, 0.04] }}
+            transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-gradient-to-r from-brand-red/60 via-brand-magenta/50 to-brand-purple/60 rounded-full blur-[90px] pointer-events-none -z-10"
+          />
+
+          {/* Secondary orb — top-left */}
+          <motion.div
+            aria-hidden="true"
+            animate={{ y: [0, -20, 0], opacity: [0.025, 0.05, 0.025] }}
+            transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+            className="absolute top-0 left-[5%] w-[300px] h-[300px] bg-gradient-to-br from-brand-red to-transparent rounded-full blur-[80px] pointer-events-none -z-10"
+          />
+
+          {/* Secondary orb — bottom-right */}
+          <motion.div
+            aria-hidden="true"
+            animate={{ y: [0, 18, 0], opacity: [0.025, 0.045, 0.025] }}
+            transition={{ duration: 19, repeat: Infinity, ease: 'easeInOut', delay: 5 }}
+            className="absolute bottom-0 right-[5%] w-[280px] h-[280px] bg-gradient-to-tl from-brand-purple to-transparent rounded-full blur-[80px] pointer-events-none -z-10"
+          />
+
+          {/* Floating particle dots */}
+          {[
+            { x: '15%', y: '20%', dur: 11, delay: 0, size: 4 },
+            { x: '75%', y: '15%', dur: 14, delay: 1.5, size: 3 },
+            { x: '88%', y: '55%', dur: 9, delay: 3, size: 5 },
+            { x: '10%', y: '70%', dur: 13, delay: 2, size: 3 },
+            { x: '50%', y: '80%', dur: 16, delay: 0.5, size: 4 },
+            { x: '35%', y: '10%', dur: 12, delay: 4, size: 3 },
+          ].map((p, i) => (
+            <motion.div
+              key={i}
+              aria-hidden="true"
+              animate={{ y: [0, -12, 0], opacity: [0.1, 0.25, 0.1] }}
+              transition={{ duration: p.dur, repeat: Infinity, ease: 'easeInOut', delay: p.delay }}
+              className="absolute rounded-full bg-brand-purple pointer-events-none -z-10"
+              style={{
+                left: p.x,
+                top: p.y,
+                width: p.size,
+                height: p.size,
+              }}
+            />
+          ))}
+
+          {/* Thin gradient shimmer line */}
+          <motion.div
+            aria-hidden="true"
+            animate={{ scaleX: [0.3, 1, 0.3], opacity: [0.03, 0.06, 0.03] }}
+            transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
+            className="absolute top-[45%] left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-magenta to-transparent pointer-events-none -z-10"
+          />
+        </>
       )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Header with Navigation Controls */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
           <FadeInView className="text-left">
             <span className="text-sm font-bold text-brand-purple tracking-widest uppercase">
               Client Success Stories
@@ -207,62 +236,59 @@ export default function TestimonialsSection() {
               Read quotes directly from business owners who partnered with us to scale their digital marketing.
             </p>
           </FadeInView>
-
-          {/* Carousel Arrows */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handlePrev}
-              aria-label="Previous testimonial"
-              className="w-12 h-12 rounded-full border border-gray-200 bg-white flex items-center justify-center text-neutral-black hover:border-brand-purple hover:text-brand-purple hover:bg-brand-purple/5 transition-all duration-300 shadow-sm cursor-pointer"
-            >
-              <ChevronLeft size={20} />
-            </button>
-            <button
-              onClick={handleNext}
-              aria-label="Next testimonial"
-              className="w-12 h-12 rounded-full border border-gray-200 bg-white flex items-center justify-center text-neutral-black hover:border-brand-purple hover:text-brand-purple hover:bg-brand-purple/5 transition-all duration-300 shadow-sm cursor-pointer"
-            >
-              <ChevronRight size={20} />
-            </button>
-          </div>
         </div>
 
-        {/* Carousel Container — 2.2 cards visible on desktop, snap-scroll on mobile */}
-        <motion.div
-          ref={scrollContainerRef}
-          className="flex gap-6 overflow-x-auto pb-8 pt-4 scrollbar-none snap-x snap-mandatory scroll-smooth"
-          initial={shouldReduceMotion ? undefined : 'hidden'}
-          whileInView={shouldReduceMotion ? undefined : 'visible'}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ staggerChildren: 0.12 }}
+        {/* Infinite Marquee Container */}
+        <div 
+          className="relative w-full overflow-hidden py-4 -mx-4 px-4 sm:mx-0 sm:px-0"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
         >
-          {testimonialsData.map((testimonial) => (
-            <div
-              key={testimonial.id}
-              className="w-[88%] sm:w-[55%] lg:w-[42%] flex-shrink-0 snap-start h-auto"
-            >
-              <TestimonialCard
-                testimonial={testimonial}
-                shouldReduceMotion={shouldReduceMotion}
-              />
-            </div>
-          ))}
-        </motion.div>
+          {/* Fade gradient masks for seamless entering/exiting */}
+          <div className="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
 
-        {/* Pagination Indicators */}
-        <div className="flex items-center justify-center gap-2 mt-6">
-          {testimonialsData.map((t, idx) => (
-            <button
-              key={t.id}
-              onClick={() => handleScrollTo(idx)}
-              aria-label={`Go to testimonial ${idx + 1}`}
-              className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
-                activeIndex === idx
-                  ? 'w-8 bg-brand-gradient'
-                  : 'w-2.5 bg-gray-250 hover:bg-gray-400'
-              }`}
-            />
-          ))}
+          <motion.div
+            className="flex gap-6"
+            animate={{
+              x: shouldReduceMotion ? 0 : isHovered ? undefined : ["0%", "calc(-50% - 12px)"],
+            }}
+            transition={{
+              duration: shouldReduceMotion ? 0 : 35,
+              repeat: shouldReduceMotion ? 0 : Infinity,
+              ease: 'linear',
+              repeatType: 'loop',
+            }}
+          >
+            {/* First Set */}
+            <div className="flex gap-6 flex-shrink-0">
+              {testimonialsData.map((testimonial) => (
+                <div
+                  key={`set1-${testimonial.id}`}
+                  className="w-[85vw] sm:w-[400px] lg:w-[450px] flex-shrink-0 h-auto"
+                >
+                  <TestimonialCard
+                    testimonial={testimonial}
+                    shouldReduceMotion={shouldReduceMotion}
+                  />
+                </div>
+              ))}
+            </div>
+            {/* Second Set */}
+            <div className="flex gap-6 flex-shrink-0">
+              {testimonialsData.map((testimonial) => (
+                <div
+                  key={`set2-${testimonial.id}`}
+                  className="w-[85vw] sm:w-[400px] lg:w-[450px] flex-shrink-0 h-auto"
+                >
+                  <TestimonialCard
+                    testimonial={testimonial}
+                    shouldReduceMotion={shouldReduceMotion}
+                  />
+                </div>
+              ))}
+            </div>
+          </motion.div>
         </div>
 
       </div>

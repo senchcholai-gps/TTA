@@ -1,15 +1,10 @@
 /**
- * TTA Company Profile — Premium PDF Generator
- * ─────────────────────────────────────────────
- * Design language: Premium Corporate · Modern Editorial · Minimal Luxury
+ * TTA Company Profile — Premium 6-Page PDF Generator
+ * ────────────────────────────────────────────────────────
+ * Design language: Premium Executive · Minimal Luxury · Annual Report Editorial
+ * Layout: 6 pages matching the screenshot references exactly.
+ * Background: Pure White, minimal brand accent elements, zero placeholder clutter pages.
  * Library: pdfkit 0.19.x
- *
- * Brand Palette
- *   Red      #D6003C
- *   Magenta  #8B0095
- *   Purple   #3D00D6
- *   Charcoal #1A1A1A
- *   White    #FFFFFF
  */
 
 import PDFDocument from 'pdfkit'
@@ -20,695 +15,740 @@ import { fileURLToPath } from 'url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // ──────────────────────────────────────────────────────────────────────────────
-// CONSTANTS
+// CONSTANTS & BRAND SYSTEM
 // ──────────────────────────────────────────────────────────────────────────────
 
-const PAGE_W    = 595.28
-const PAGE_H    = 841.89
-const MARGIN    = 52
-const CW        = PAGE_W - MARGIN * 2   // content width  = 491.28
+const PAGE_W = 595.28
+const PAGE_H = 841.89
+const MARGIN = 54
+const CW = PAGE_W - MARGIN * 2 // Content width = 487.28
 
 const BRAND = {
-  red:          '#D6003C',
-  magenta:      '#8B0095',
-  purple:       '#3D00D6',
-  charcoal:     '#1A1A1A',
-  darkGray:     '#2D2D35',
-  midGray:      '#6B6B78',
-  lightGray:    '#E8E8EF',
-  nearWhite:    '#F5F5F8',
-  purpleTint:   '#EDEBFF',
-  purpleBorder: '#C5BFEE',
-  white:        '#FFFFFF',
+  red: '#D6003C',
+  magenta: '#8B0095',
+  purple: '#3D00D6',
+  charcoal: '#1A1A1A',
+  darkGray: '#2D2D35',
+  midGray: '#6B6B78',
+  lightGray: '#E8E8EF',
+  nearWhite: '#F9F9FB',
+  purpleTint: '#F4F3FA',
+  white: '#FFFFFF'
 }
 
-// ──────────────────────────────────────────────────────────────────────────────
-// GRADIENT FACTORY
-// ──────────────────────────────────────────────────────────────────────────────
-
-/** Horizontal brand gradient (red → magenta → purple) */
+// Brand gradient generators
 function hGrad(doc, x, y, w) {
   const g = doc.linearGradient(x, y, x + w, y)
-  g.stop(0,   BRAND.red)
+  g.stop(0, BRAND.red)
   g.stop(0.5, BRAND.magenta)
-  g.stop(1,   BRAND.purple)
-  return g
-}
-
-/** Vertical brand gradient (top → bottom) */
-function vGrad(doc, x, y, h) {
-  const g = doc.linearGradient(x, y, x, y + h)
-  g.stop(0,   BRAND.red)
-  g.stop(0.5, BRAND.magenta)
-  g.stop(1,   BRAND.purple)
+  g.stop(1, BRAND.purple)
   return g
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
-// UTILITY: draw a thin 0.5pt horizontal gradient rule
+// PATH CONTEXT & LOGO HELPERS
 // ──────────────────────────────────────────────────────────────────────────────
-function gradRule(doc, x, y, w, h = 0.5) {
-  doc.save()
-  doc.rect(x, y, w, h).fill(hGrad(doc, x, y, w))
-  doc.restore()
-}
 
-// ──────────────────────────────────────────────────────────────────────────────
-// UTILITY: section eyebrow label + accent bar
-//   Returns how much y was consumed.
-// ──────────────────────────────────────────────────────────────────────────────
-function sectionLabel(doc, text, x, y, color = BRAND.purple) {
-  // Label text
-  doc.save()
-  doc.font('Helvetica-Bold')
-     .fontSize(6.5)
-     .fillColor(color)
-     .text(text, x, y, { characterSpacing: 1.5, lineBreak: false })
-  doc.restore()
-
-  // Accent bar: thin gradient 48pt wide
-  doc.save()
-  doc.rect(x, y + 13, 48, 1.2).fill(hGrad(doc, x, y + 13, 48))
-  doc.restore()
-
-  return 22   // total height consumed
-}
-
-// ──────────────────────────────────────────────────────────────────────────────
-// UTILITY: draw a check-circle outline icon
-// ──────────────────────────────────────────────────────────────────────────────
-function checkCircle(doc, cx, cy, r, color) {
-  doc.save()
-
-  // Circle outline
-  doc.circle(cx, cy, r)
-     .lineWidth(0.8)
-     .strokeColor(color)
-     .strokeOpacity(0.55)
-     .stroke()
-
-  // Checkmark inside (three-point path)
-  const s = r * 0.4
-  doc.moveTo(cx - s, cy)
-     .lineTo(cx - s * 0.2, cy + s * 0.8)
-     .lineTo(cx + s * 0.9, cy - s * 0.7)
-     .lineWidth(0.9)
-     .strokeColor(color)
-     .strokeOpacity(0.65)
-     .stroke()
-
-  doc.restore()
-}
-
-// ──────────────────────────────────────────────────────────────────────────────
-// PATHS
-// ──────────────────────────────────────────────────────────────────────────────
-const OUTPUT     = path.join(__dirname, '..', 'public', 'documents', 'TTA_Company_Profile.pdf')
-const LOGO_WHITE = path.join(__dirname, '..', 'public', 'TTA_Logo_Landscape_White.png')
-const LOGO_COLOR = path.join(__dirname, '..', 'public', 'TTA_Logo_Landscape.png')
+const OUTPUT = path.join(__dirname, '..', 'public', 'documents', 'TTA_Company_Profile.pdf')
+const LOGO_ICON = path.join(__dirname, '..', 'public', 'TTA_Logo_Icon.png')
 
 fs.mkdirSync(path.dirname(OUTPUT), { recursive: true })
-
-// ──────────────────────────────────────────────────────────────────────────────
-// DOCUMENT
-// ──────────────────────────────────────────────────────────────────────────────
 
 const doc = new PDFDocument({
   size: 'A4',
   margin: 0,
-  info: {
-    Title:    'The Three Amigos — Company Profile',
-    Author:   'The Three Amigos Agency',
-    Subject:  'Official Company Profile',
-    Keywords: 'TTA, AI Marketing, Agency, Company Profile',
-    Creator:  'TTA Internal Documents v1.0',
-  },
+  bufferPages: true
 })
 
 const writeStream = fs.createWriteStream(OUTPUT)
 doc.pipe(writeStream)
 
-// ══════════════════════════════════════════════════════════════════════════════
-// ❶  COVER HEADER  (0 → 178pt)
-// ══════════════════════════════════════════════════════════════════════════════
-
-const HEADER_H = 178
-
-// ── Full-width gradient fill ──────────────────────────────────────────────────
-doc.save()
-doc.rect(0, 0, PAGE_W, HEADER_H).fill(hGrad(doc, 0, 0, PAGE_W))
-doc.restore()
-
-// ── Subtle decorative circle (top-right) ──────────────────────────────────────
-// Two nested, semi-transparent white circles give depth without clutter
-doc.save()
-doc.circle(PAGE_W - 54, -22, 148)
-   .fillOpacity(0.05)
-   .fill(BRAND.white)
-doc.restore()
-
-doc.save()
-doc.circle(PAGE_W - 12, 12, 88)
-   .fillOpacity(0.04)
-   .fill(BRAND.white)
-doc.restore()
-
-// ── LEFT COLUMN: Text content ─────────────────────────────────────────────────
-const TXT_X = MARGIN
-
-// Company name — largest element
-doc.save()
-doc.font('Helvetica-Bold')
-   .fontSize(31)
-   .fillColor(BRAND.white)
-   .fillOpacity(1)
-   .text('The Three Amigos', TXT_X, 30, { lineBreak: false })
-doc.restore()
-
-// Agency descriptor line
-doc.save()
-doc.font('Helvetica')
-   .fontSize(11)
-   .fillColor(BRAND.white)
-   .fillOpacity(0.72)
-   .text('AI Marketing Agency', TXT_X, 68, { lineBreak: false })
-doc.restore()
-
-// Thin white rule (100pt) between descriptor and profile title
-doc.save()
-doc.rect(TXT_X, 88, 80, 0.75)
-   .fillOpacity(0.30)
-   .fill(BRAND.white)
-doc.restore()
-
-// "Company Profile" — medium-large
-doc.save()
-doc.font('Helvetica-Bold')
-   .fontSize(19.5)
-   .fillColor(BRAND.white)
-   .fillOpacity(1)
-   .text('Company Profile', TXT_X, 98, { lineBreak: false })
-doc.restore()
-
-// Meta line — small, uppercase, wide tracking
-doc.save()
-doc.font('Helvetica')
-   .fontSize(7)
-   .fillColor(BRAND.white)
-   .fillOpacity(0.55)
-   .text('OFFICIAL DOCUMENT  ·  CONFIDENTIAL  ·  ISSUED JULY 2026', TXT_X, 128, {
-     lineBreak: false,
-     characterSpacing: 0.4,
-   })
-doc.restore()
-
-// ── RIGHT COLUMN: TTA Logo ────────────────────────────────────────────────────
-// Logo positioned top-right with generous breathing room
-// Logo area: x=340 to 543 (width ~203pt), vertically centred in header
-const LOGO_AREA_X = 332
-const LOGO_AREA_W = PAGE_W - LOGO_AREA_X - MARGIN - 8
-const LOGO_AREA_H = HEADER_H - 30  // vertical space available
-const LOGO_AREA_Y = 15
-
-const LOGO_MAX_W = LOGO_AREA_W        // max width  ≈ 203pt
-const LOGO_MAX_H = LOGO_AREA_H - 16  // max height ≈ 117pt
-
-if (fs.existsSync(LOGO_WHITE)) {
-  // Calculate aspect ratio to centre properly
-  // TTA Landscape logo is roughly 1140×448 (≈ 2.54 : 1)
-  const LOGO_ASPECT = 1140 / 448
-  const fitH = Math.min(LOGO_MAX_H, LOGO_MAX_W / LOGO_ASPECT)
-  const fitW = fitH * LOGO_ASPECT
-
-  const logoX = LOGO_AREA_X + (LOGO_AREA_W - fitW) / 2
-  const logoY = LOGO_AREA_Y + (LOGO_AREA_H - fitH) / 2 + 8
-
-  doc.image(LOGO_WHITE, logoX, logoY, {
-    width:  fitW,
-    height: fitH,
-  })
+// Helper to draw the logo icon inside a dashed border box
+function drawLogoBox(doc, x, y, size) {
+  doc.save()
+  
+  // Outer dashed box
+  doc.roundedRect(x, y, size, size, 4)
+     .lineWidth(0.5)
+     .strokeColor(BRAND.midGray)
+     .strokeOpacity(0.5)
+     .dash(2, { space: 2 })
+     .stroke()
+  
+  // Image draw
+  if (fs.existsSync(LOGO_ICON)) {
+    doc.image(LOGO_ICON, x + 2, y + 2, { width: size - 4, height: size - 4 })
+  } else {
+    doc.font('Helvetica-Bold')
+       .fontSize(size * 0.2)
+       .fillColor(BRAND.midGray)
+       .text('LOGO', x, y + (size - size * 0.2) / 2, { width: size, align: 'center' })
+  }
+  
+  doc.restore()
 }
 
-// ── Bottom edge: very thin white separator line ───────────────────────────────
-doc.save()
-doc.rect(0, HEADER_H - 1, PAGE_W, 1)
-   .fillOpacity(0.15)
-   .fill(BRAND.white)
-doc.restore()
-
-// ══════════════════════════════════════════════════════════════════════════════
-// ❷  BODY
-// ══════════════════════════════════════════════════════════════════════════════
-// Body starts at y = HEADER_H, white background (implicit)
-// Body ends at y = 782pt (footer begins there)
-
-let y = HEADER_H + 30  // 30pt breathing room beneath header
-
-// ──────────────────────────────────────────────────────────────────────────────
-// ❷·A  COMPANY OVERVIEW
-// ──────────────────────────────────────────────────────────────────────────────
-
-y += sectionLabel(doc, 'COMPANY OVERVIEW', MARGIN, y, BRAND.red)
-y += 6  // gap before body text
-
-// Lead paragraph — semi-bold, slightly larger
-doc.save()
-doc.font('Helvetica-Bold')
-   .fontSize(9.8)
-   .fillColor(BRAND.darkGray)
-   .fillOpacity(1)
-   .text(
-     'The Three Amigos (TTA) is an AI-powered marketing agency helping modern brands achieve measurable business growth through strategy, creativity, and technology.',
-     MARGIN, y,
-     { width: CW, lineGap: 4.5, align: 'left' }
-   )
-y = doc.y + 11
-doc.restore()
-
-// Body paragraph — regular weight, comfortable reading size
-doc.save()
-doc.font('Helvetica')
-   .fontSize(9.5)
-   .fillColor(BRAND.darkGray)
-   .fillOpacity(0.82)
-   .text(
-     'Our expertise spans social media management, content production, video editing, AI-assisted creative workflows, influencer collaborations, and performance marketing. Rather than delivering isolated marketing services, we build integrated growth systems that increase brand awareness, generate qualified leads, and create sustainable long-term business impact.',
-     MARGIN, y,
-     { width: CW, lineGap: 4, align: 'left' }
-   )
-y = doc.y
-doc.restore()
-
-y += 28  // generous breathing room before next section
-
-// Thin full-width gradient rule
-gradRule(doc, MARGIN, y, CW, 0.5)
-
-y += 24  // space after rule
-
-// ──────────────────────────────────────────────────────────────────────────────
-// ❷·B  LEADERSHIP TEAM
-// ──────────────────────────────────────────────────────────────────────────────
-
-y += sectionLabel(doc, 'LEADERSHIP TEAM', MARGIN, y, BRAND.purple)
-y += 5
-
-// Section description
-doc.save()
-doc.font('Helvetica')
-   .fontSize(9)
-   .fillColor(BRAND.midGray)
-   .fillOpacity(1)
-   .text(
-     'Meet the people responsible for leading strategy, creative execution, and production at The Three Amigos.',
-     MARGIN, y,
-     { width: CW, lineGap: 2.5 }
-   )
-y = doc.y + 14
-doc.restore()
-
-// ── Premium Table ─────────────────────────────────────────────────────────────
-
-const TABLE_X       = MARGIN
-const TABLE_W       = CW
-const HEADER_ROW_H  = 32
-const DATA_ROW_H    = 40
-const COL_ROLE_W    = TABLE_W * 0.28    // 28% for Role
-const COL_NAME_W    = TABLE_W - COL_ROLE_W  // 72% for Name
-
-const TEAM = [
-  { role: 'Founder',         name: 'Amirthashree Vijayakumar' },
-  { role: 'Co-Founder',      name: 'Ravindhar Devaraj'        },
-  { role: 'Camera & Editor', name: 'Nagaraj'                  },
-]
-const ROLE_COLORS = [BRAND.red, BRAND.magenta, BRAND.purple]
-
-// Table outer container (very light gray background for depth)
-const TOTAL_TABLE_H = HEADER_ROW_H + TEAM.length * DATA_ROW_H
-
-// Subtle shadow layer
-doc.save()
-doc.roundedRect(TABLE_X + 1.5, y + 1.5, TABLE_W, TOTAL_TABLE_H, 6)
-   .fillOpacity(0.06)
-   .fill(BRAND.purple)
-doc.restore()
-
-// ── Table header row (gradient) ───────────────────────────────────────────────
-doc.save()
-doc.roundedRect(TABLE_X, y, TABLE_W, HEADER_ROW_H + 6, 6)
-   .fill(hGrad(doc, TABLE_X, y, TABLE_W))
-// Square off bottom corners (overlay a rect to cancel the rounding on the bottom)
-doc.rect(TABLE_X, y + HEADER_ROW_H / 2, TABLE_W, HEADER_ROW_H / 2 + 6)
-   .fill(hGrad(doc, TABLE_X, y + HEADER_ROW_H / 2, TABLE_W))
-doc.restore()
-
-// Header column labels
-const HEADER_TEXT_Y = y + (HEADER_ROW_H - 8) / 2
-doc.save()
-doc.font('Helvetica-Bold')
-   .fontSize(7.5)
-   .fillColor(BRAND.white)
-   .fillOpacity(0.9)
-   .text('ROLE', TABLE_X + 16, HEADER_TEXT_Y, { characterSpacing: 1, lineBreak: false })
-doc.restore()
-
-doc.save()
-doc.font('Helvetica-Bold')
-   .fontSize(7.5)
-   .fillColor(BRAND.white)
-   .fillOpacity(0.9)
-   .text('NAME', TABLE_X + COL_ROLE_W + 16, HEADER_TEXT_Y, { characterSpacing: 1, lineBreak: false })
-doc.restore()
-
-y += HEADER_ROW_H
-
-// ── Data rows ─────────────────────────────────────────────────────────────────
-TEAM.forEach((member, i) => {
-  const rowY = y
-  const isLast = i === TEAM.length - 1
-  const rowColor = i % 2 === 0 ? BRAND.nearWhite : BRAND.white
-
-  // Row background (with rounded bottom corners on the last row)
+// Helper to draw standard page header
+function drawPageHeader(doc, pageNum) {
+  const y = 54
+  
+  // Logo
+  drawLogoBox(doc, MARGIN, y, 24)
+  
+  // Title text next to logo
   doc.save()
-  if (isLast) {
-    doc.rect(TABLE_X, rowY, TABLE_W, DATA_ROW_H / 2).fill(rowColor)
-    doc.roundedRect(TABLE_X, rowY + DATA_ROW_H / 2 - 6, TABLE_W, DATA_ROW_H / 2 + 6, 6).fill(rowColor)
-  } else {
-    doc.rect(TABLE_X, rowY, TABLE_W, DATA_ROW_H).fill(rowColor)
-  }
+  doc.font('Helvetica-Bold')
+     .fontSize(7.5)
+     .fillColor(BRAND.charcoal)
+     .text('THE THREE', MARGIN + 32, y + 3, { lineGap: 0 })
+     .text('AMIGOS', MARGIN + 32, y + 11, { lineGap: 0 })
   doc.restore()
 
-  // Left accent bar (colour-coded per role)
+  // Right metadata
   doc.save()
-  if (isLast) {
-    doc.rect(TABLE_X, rowY, 3.5, DATA_ROW_H - 6).fill(ROLE_COLORS[i])
-    doc.roundedRect(TABLE_X, rowY + DATA_ROW_H - 10, 3.5, 10, 2).fill(ROLE_COLORS[i])
-  } else {
-    doc.rect(TABLE_X, rowY, 3.5, DATA_ROW_H).fill(ROLE_COLORS[i])
-  }
+  doc.font('Helvetica')
+     .fontSize(8.5)
+     .fillColor(BRAND.midGray)
+     .text(`Company Profile | Page ${pageNum}`, PAGE_W - MARGIN - 120, y + 7, { width: 120, align: 'right' })
   doc.restore()
 
-  // Column divider (subtle vertical line)
+  // Horizontal separator line
   doc.save()
-  doc.rect(TABLE_X + COL_ROLE_W, rowY + 10, 0.5, DATA_ROW_H - 20)
-     .fillOpacity(0.18)
-     .fill(BRAND.midGray)
+  doc.rect(MARGIN, y + 36, CW, 0.5).fill(BRAND.lightGray)
+  doc.restore()
+}
+
+// Helper to draw standard page footer
+function drawPageFooter(doc, pageNum) {
+  const y = PAGE_H - 72
+
+  // Horizontal top divider line
+  doc.save()
+  doc.rect(MARGIN, y - 12, CW, 0.5).fill(BRAND.lightGray)
   doc.restore()
 
-  // Row bottom border (not on the last row)
-  if (!isLast) {
-    doc.save()
-    doc.rect(TABLE_X, rowY + DATA_ROW_H - 0.5, TABLE_W, 0.5)
-       .fillOpacity(0.12)
-       .fill(BRAND.lightGray)
-    doc.restore()
-  }
+  // Left metadata details
+  doc.save()
+  doc.font('Helvetica')
+     .fontSize(8)
+     .fillColor(BRAND.midGray)
+     .text('www.thethreeamigos.in', MARGIN, y, { lineGap: 2.5 })
+     .text('thethreeamigosdm@gmail.com', MARGIN, y + 11, { lineGap: 2.5 })
+     .text('Tamil Nadu, India', MARGIN, y + 22, { lineGap: 2.5 })
+  doc.restore()
 
-  // Role text (coloured, semi-bold)
-  const textCentreY = rowY + (DATA_ROW_H - 10) / 2
+  // Right page number
+  const pageStr = String(pageNum).padStart(2, '0')
   doc.save()
   doc.font('Helvetica-Bold')
      .fontSize(9)
-     .fillColor(ROLE_COLORS[i])
-     .fillOpacity(1)
-     .text(member.role, TABLE_X + 16, textCentreY, { lineBreak: false })
+     .fillColor(BRAND.charcoal)
+     .text(pageStr, PAGE_W - MARGIN - 30, y + 11, { width: 30, align: 'right' })
   doc.restore()
-
-  // Name text (regular, charcoal)
-  doc.save()
-  doc.font('Helvetica')
-     .fontSize(9.5)
-     .fillColor(BRAND.darkGray)
-     .fillOpacity(1)
-     .text(member.name, TABLE_X + COL_ROLE_W + 16, textCentreY, { lineBreak: false })
-  doc.restore()
-
-  y += DATA_ROW_H
-})
-
-// Table outer border (very fine)
-doc.save()
-doc.roundedRect(TABLE_X, y - TOTAL_TABLE_H, TABLE_W, TOTAL_TABLE_H, 6)
-   .lineWidth(0.5)
-   .strokeColor(BRAND.lightGray)
-   .strokeOpacity(0.8)
-   .stroke()
-doc.restore()
-
-y += 26  // space after table
-
-// ──────────────────────────────────────────────────────────────────────────────
-// ❷·C  INFORMATION CARD — "Future Updates"
-// ──────────────────────────────────────────────────────────────────────────────
-
-const CARD_PADDING  = 18
-const CARD_W        = TABLE_W
-const CARD_ACCENT_W = 4
-
-// Pre-estimate card height: heading line + 3-4 body lines + padding
-const CARD_H = 106
-
-// Subtle shadow
-doc.save()
-doc.roundedRect(TABLE_X + 2, y + 2, CARD_W, CARD_H, 7)
-   .fillOpacity(0.06)
-   .fill(BRAND.purple)
-doc.restore()
-
-// Card body (very light purple tint)
-doc.save()
-doc.roundedRect(TABLE_X, y, CARD_W, CARD_H, 7)
-   .fill(BRAND.purpleTint)
-doc.restore()
-
-// Left accent bar (gradient vertical)
-doc.save()
-// Fill left-side strip with a vertical gradient
-doc.rect(TABLE_X, y + 7, CARD_ACCENT_W, CARD_H - 14)
-   .fill(vGrad(doc, TABLE_X, y + 7, CARD_H - 14))
-// Top rounded cap
-doc.roundedRect(TABLE_X, y, CARD_ACCENT_W, 14, 4)
-   .fill(BRAND.red)
-// Bottom rounded cap
-doc.roundedRect(TABLE_X, y + CARD_H - 14, CARD_ACCENT_W, 14, 4)
-   .fill(BRAND.purple)
-doc.restore()
-
-// Card border (very subtle)
-doc.save()
-doc.roundedRect(TABLE_X, y, CARD_W, CARD_H, 7)
-   .lineWidth(0.6)
-   .strokeColor(BRAND.purpleBorder)
-   .strokeOpacity(0.45)
-   .stroke()
-doc.restore()
-
-// ── Info icon (small filled circle with "i") ──────────────────────────────────
-const ICON_CX = TABLE_X + CARD_PADDING + 2 + CARD_ACCENT_W + 8
-const ICON_CY = y + CARD_PADDING + 6
-
-doc.save()
-doc.circle(ICON_CX, ICON_CY, 8).fill(BRAND.purple)
-doc.font('Helvetica-Bold')
-   .fontSize(8.5)
-   .fillColor(BRAND.white)
-   .text('i', ICON_CX - 2, ICON_CY - 5.5, { lineBreak: false })
-doc.restore()
-
-// Card heading — "Future Updates"
-doc.save()
-doc.font('Helvetica-Bold')
-   .fontSize(10)
-   .fillColor(BRAND.purple)
-   .text('Future Updates', ICON_CX + 16, y + CARD_PADDING - 1, { lineBreak: false })
-doc.restore()
-
-// Thin rule below heading
-doc.save()
-doc.rect(TABLE_X + CARD_ACCENT_W + CARD_PADDING, y + CARD_PADDING + 17, CARD_W - CARD_ACCENT_W - CARD_PADDING * 2, 0.4)
-   .fillOpacity(0.2)
-   .fill(BRAND.purple)
-doc.restore()
-
-// Card body text
-const CARD_TEXT_X = TABLE_X + CARD_ACCENT_W + CARD_PADDING + 2
-const CARD_TEXT_W = CARD_W - CARD_ACCENT_W - CARD_PADDING * 2 - 4
-
-doc.save()
-doc.font('Helvetica')
-   .fontSize(8.8)
-   .fillColor(BRAND.darkGray)
-   .fillOpacity(0.82)
-   .text(
-     'Additional company information—including leadership biographies, team photography, portfolio highlights, certifications, and company credentials—will be incorporated as these assets become available.',
-     CARD_TEXT_X, y + CARD_PADDING + 24,
-     { width: CARD_TEXT_W, lineGap: 3 }
-   )
-doc.restore()
-
-doc.save()
-doc.font('Helvetica-Bold')
-   .fontSize(8.5)
-   .fillColor(BRAND.purple)
-   .fillOpacity(0.7)
-   .text(
-     'This document represents the current approved company profile.',
-     CARD_TEXT_X, y + CARD_PADDING + 68,
-     { width: CARD_TEXT_W, lineGap: 2 }
-   )
-doc.restore()
-
-y += CARD_H + 28
-
-// ──────────────────────────────────────────────────────────────────────────────
-// ❷·D  UPCOMING PROFILE SECTIONS
-// ──────────────────────────────────────────────────────────────────────────────
-
-y += sectionLabel(doc, 'UPCOMING PROFILE SECTIONS', MARGIN, y, BRAND.charcoal)
-y += 8
-
-const UPCOMING_ITEMS = [
-  'Mission & Vision',
-  'Core Services',
-  'Client Portfolio',
-  'Case Studies',
-  'Leadership Profiles',
-  'Team Photography',
-  'Awards & Certifications',
-  'Contact Information',
-]
-
-const COL_ITEM_W = CW / 2
-const ITEM_ROW_H = 22
-const ROWS        = Math.ceil(UPCOMING_ITEMS.length / 2)
-
-const checkColors = [BRAND.red, BRAND.purple, BRAND.magenta, BRAND.purple]
-
-UPCOMING_ITEMS.forEach((item, i) => {
-  const col    = i % 2
-  const row    = Math.floor(i / 2)
-  const itemX  = MARGIN + col * COL_ITEM_W
-  const itemY  = y + row * ITEM_ROW_H
-  const iconCY = itemY + 5.5
-  const color  = checkColors[row % checkColors.length]
-
-  // Draw check-circle icon
-  checkCircle(doc, itemX + 7, iconCY, 5.5, color)
-
-  // Item label
-  doc.save()
-  doc.font('Helvetica')
-     .fontSize(9)
-     .fillColor(BRAND.darkGray)
-     .fillOpacity(0.78)
-     .text(item, itemX + 19, itemY, { lineBreak: false })
-  doc.restore()
-})
-
-y += ROWS * ITEM_ROW_H + 14
-
-// ══════════════════════════════════════════════════════════════════════════════
-// ❸  FOOTER  (PAGE_H - 62 → PAGE_H)
-// ══════════════════════════════════════════════════════════════════════════════
-
-const FOOTER_H = 60
-const FOOTER_Y = PAGE_H - FOOTER_H
-
-// Footer background (very light, off-white)
-doc.save()
-doc.rect(0, FOOTER_Y, PAGE_W, FOOTER_H).fill('#F3F3F6')
-doc.restore()
-
-// Top gradient rule (full width, 1.5pt)
-gradRule(doc, 0, FOOTER_Y, PAGE_W, 1.5)
-
-// ── Left column: logo + descriptor ───────────────────────────────────────────
-const FOOTER_LOGO_X = MARGIN
-const FOOTER_LOGO_Y = FOOTER_Y + 14
-
-if (fs.existsSync(LOGO_COLOR)) {
-  doc.image(LOGO_COLOR, FOOTER_LOGO_X, FOOTER_LOGO_Y, { height: 18 })
 }
 
+// Helper to draw checkbox element
+function drawCheck(doc, x, y, text) {
+  doc.save()
+  doc.font('Helvetica-Bold')
+     .fontSize(9.5)
+     .fillColor(BRAND.purple)
+     .text('✓', x, y, { lineBreak: false })
+     .fillColor(BRAND.charcoal)
+     .text(text, x + 14, y, { lineBreak: false })
+  doc.restore()
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PAGE 1: COVER PAGE
+// ══════════════════════════════════════════════════════════════════════════════
+
+// Top left header logo
+drawLogoBox(doc, MARGIN, 54, 48)
 doc.save()
-doc.font('Helvetica')
-   .fontSize(6.8)
+doc.font('Helvetica-Bold')
+   .fontSize(9.5)
+   .fillColor(BRAND.charcoal)
+   .text('THE THREE AMIGOS', MARGIN + 58, 66)
+   .font('Helvetica')
+   .fontSize(7.5)
    .fillColor(BRAND.midGray)
-   .text('AI Marketing Agency', FOOTER_LOGO_X, FOOTER_LOGO_Y + 22, { lineBreak: false })
+   .text('AI-FIRST MARKETING AGENCY', MARGIN + 58, 78, { characterSpacing: 0.5 })
 doc.restore()
 
-// ── Centre column: contact details ───────────────────────────────────────────
-const CENTRE_X = PAGE_W / 2
+// Central Gradient bar & Title text
+const barY = 320
+const barH = 52
+doc.save()
+doc.rect(MARGIN, barY, CW, barH).fill(hGrad(doc, MARGIN, barY, CW))
+doc.restore()
 
+// Bold title text printed directly over the gradient bar
+doc.save()
+doc.font('Helvetica-Bold')
+   .fontSize(28)
+   .fillColor(BRAND.charcoal)
+   .text('THE THREE AMIGOS', MARGIN, barY + 14, { width: CW, align: 'center', characterSpacing: 0.5 })
+doc.restore()
+
+// Subtitle & taglines below gradient bar
+doc.save()
+doc.font('Helvetica')
+   .fontSize(12)
+   .fillColor(BRAND.midGray)
+   .text('AI-FIRST MARKETING AGENCY', MARGIN, barY + 72, { width: CW, align: 'center', characterSpacing: 1.5 })
+
+doc.font('Helvetica-Bold')
+   .fontSize(14)
+   .fillColor(BRAND.charcoal)
+   .text('Company Profile', MARGIN, barY + 114, { width: CW, align: 'center' })
+
+doc.font('Helvetica')
+   .fontSize(9.5)
+   .fillColor(BRAND.midGray)
+   .text(
+     'Accelerating Business Growth Through AI-Powered Marketing,\nCreative Content, and Performance-Driven Digital Strategies.',
+     MARGIN, barY + 154, { width: CW, align: 'center', lineGap: 4 }
+   )
+doc.restore()
+
+// Tiny centered gradient accent line
+doc.save()
+doc.rect((PAGE_W - 60) / 2, barY + 214, 60, 2).fill(hGrad(doc, (PAGE_W - 60) / 2, barY + 214, 60))
+doc.restore()
+
+// Footer (Horizontal Alignment)
+const fY = PAGE_H - 72
+doc.save()
+doc.font('Helvetica')
+   .fontSize(8)
+   .fillColor(BRAND.midGray)
+   .text('www.thethreeamigos.in', MARGIN, fY, { lineBreak: false })
+   .text('thethreeamigosdm@gmail.com', MARGIN, fY, { width: CW, align: 'center' })
+   .text('Tamil Nadu, India', PAGE_W - MARGIN - 120, fY, { width: 120, align: 'right', lineBreak: false })
+doc.restore()
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PAGE 2: ABOUT US
+// ══════════════════════════════════════════════════════════════════════════════
+doc.addPage()
+drawPageHeader(doc, 2)
+
+let py = 124
+doc.save()
+doc.font('Helvetica-Bold')
+   .fontSize(22)
+   .fillColor(BRAND.charcoal)
+   .text('About Us', MARGIN, py)
+doc.restore()
+
+py += 42
+
+// Columns: Left (Company Overview) & Right (Vision & Mission)
+const colW1 = 230
+const colW2 = 241
+const col2X = MARGIN + colW1 + 16
+
+// Left Column (Overview)
 doc.save()
 doc.font('Helvetica-Bold')
    .fontSize(7.5)
+   .fillColor(BRAND.midGray)
+   .text('COMPANY OVERVIEW', MARGIN, py, { characterSpacing: 0.8 })
+
+doc.font('Helvetica')
+   .fontSize(9)
    .fillColor(BRAND.darkGray)
-   .text('hello@threeamigos.com', CENTRE_X - 78, FOOTER_Y + 16, { lineBreak: false })
+   .text(
+     'The Three Amigos is a forward-thinking AI-first marketing agency dedicated to bridging the gap between traditional brand storytelling and the future of digital technology. We empower businesses to scale by leveraging cutting-edge AI tools, data analytics, and high-impact creative strategies.',
+     MARGIN, py + 18,
+     { width: colW1 - 10, lineGap: 4.5 }
+   )
 doc.restore()
 
+// Right Column Callout (Vision & Mission)
 doc.save()
-doc.font('Helvetica')
-   .fontSize(7)
+doc.roundedRect(col2X, py, colW2, 178, 8)
+   .fillColor(BRAND.nearWhite)
+   .fill()
+doc.roundedRect(col2X, py, colW2, 178, 8)
+   .lineWidth(0.5)
+   .strokeColor(BRAND.lightGray)
+   .stroke()
+
+// Vision text block
+doc.font('Helvetica-Bold')
+   .fontSize(7.5)
    .fillColor(BRAND.midGray)
-   .text('Chennai, India', CENTRE_X - 78, FOOTER_Y + 28, { lineBreak: false })
+   .text('VISION', col2X + 16, py + 16, { characterSpacing: 0.5 })
+   .font('Helvetica')
+   .fontSize(9)
+   .fillColor(BRAND.darkGray)
+   .text(
+     'To be the global leader in AI-driven marketing, setting the standard for how brands connect with their audiences in a post-digital world.',
+     col2X + 16, py + 28, { width: colW2 - 32, lineGap: 3.5 }
+   )
+
+// Mission text block
+doc.font('Helvetica-Bold')
+   .fontSize(7.5)
+   .fillColor(BRAND.midGray)
+   .text('MISSION', col2X + 16, py + 98, { characterSpacing: 0.5 })
+   .font('Helvetica')
+   .fontSize(9)
+   .fillColor(BRAND.darkGray)
+   .text(
+     'To deliver measurable growth for our clients through the intelligent integration of human creativity and artificial intelligence.',
+     col2X + 16, py + 110, { width: colW2 - 32, lineGap: 3.5 }
+   )
 doc.restore()
 
+py += 210
+
+// Core Values
 doc.save()
-doc.font('Helvetica')
-   .fontSize(7)
+doc.font('Helvetica-Bold')
+   .fontSize(7.5)
    .fillColor(BRAND.midGray)
-   .text('www.threeamigos.in', CENTRE_X - 78, FOOTER_Y + 39, { lineBreak: false })
+   .text('CORE VALUES', MARGIN, py, { characterSpacing: 0.8 })
 doc.restore()
 
-// ── Right column: metadata + page number ─────────────────────────────────────
-const RIGHT_X = PAGE_W - MARGIN
+py += 18
+
+const values = [
+  { title: 'Innovation', desc: 'Constantly exploring the frontiers of AI technology.' },
+  { title: 'Transparency', desc: 'Clear communication and data-driven reporting.' },
+  { title: 'Excellence', desc: 'Uncompromising quality in every creative output.' }
+]
+
+const valW = (CW - 16) / 3
+values.forEach((v, idx) => {
+  const vX = MARGIN + idx * (valW + 8)
+
+  doc.save()
+  doc.roundedRect(vX, py, valW, 88, 8)
+     .fillColor(BRAND.white)
+     .fill()
+  doc.roundedRect(vX, py, valW, 88, 8)
+     .lineWidth(0.5)
+     .strokeColor(BRAND.lightGray)
+     .stroke()
+
+  doc.font('Helvetica-Bold')
+     .fontSize(10)
+     .fillColor(BRAND.charcoal)
+     .text(v.title, vX + 12, py + 14)
+
+  doc.font('Helvetica')
+     .fontSize(8.2)
+     .fillColor(BRAND.midGray)
+     .text(v.desc, vX + 12, py + 30, { width: valW - 24, lineGap: 2.5 })
+  doc.restore()
+})
+
+drawPageFooter(doc, 2)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PAGE 3: OUR SERVICES
+// ══════════════════════════════════════════════════════════════════════════════
+doc.addPage()
+drawPageHeader(doc, 3)
+
+py = 124
+doc.save()
+doc.font('Helvetica-Bold')
+   .fontSize(22)
+   .fillColor(BRAND.charcoal)
+   .text('Our Services', MARGIN, py)
+doc.restore()
+
+py += 36
+
+const servicesList = [
+  { tag: 'AI', title: 'AI Strategy', bullets: ['Workflow Automation', 'Custom AI Training', 'Tool Implementation'] },
+  { tag: 'GR', title: 'Digital Growth', bullets: ['SEO & SEM', 'Performance Ads', 'Conversion Audit'] },
+  { tag: 'CR', title: 'Content Creation', bullets: ['Video Production', 'AI Visuals', 'Copywriting'] },
+  { tag: 'SM', title: 'Social Media', bullets: ['Community Mgmt', 'Influencer Collabs', 'Viral Campaigns'] },
+  { tag: 'DA', title: 'Data Analytics', bullets: ['Custom Dashboards', 'ROI Tracking', 'User Behavior'] },
+  { tag: 'BR', title: 'Branding', bullets: ['Brand Identity', 'Market Positioning', 'Visual Language'] }
+]
+
+const cardW = (CW - 16) / 3
+const cardH = 124
+
+servicesList.forEach((s, idx) => {
+  const col = idx % 3
+  const row = Math.floor(idx / 3)
+  const cX = MARGIN + col * (cardW + 8)
+  const cY = py + row * (cardH + 12)
+
+  doc.save()
+  // Card base
+  doc.roundedRect(cX, cY, cardW, cardH, 8)
+     .fillColor(BRAND.white)
+     .fill()
+  doc.roundedRect(cX, cY, cardW, cardH, 8)
+     .lineWidth(0.5)
+     .strokeColor(BRAND.lightGray)
+     .stroke()
+
+  // Dashed icon tag box in top-left
+  doc.roundedRect(cX + 14, cY + 14, 24, 24, 4)
+     .fillColor(BRAND.purpleTint)
+     .fill()
+  doc.roundedRect(cX + 14, cY + 14, 24, 24, 4)
+     .lineWidth(0.5)
+     .strokeColor(BRAND.purple)
+     .dash(1.5, { space: 1.5 })
+     .stroke()
+
+  doc.font('Helvetica-Bold')
+     .fontSize(7.5)
+     .fillColor(BRAND.purple)
+     .text(s.tag, cX + 14, cY + 22, { width: 24, align: 'center' })
+  doc.restore()
+
+  // Title
+  doc.save()
+  doc.font('Helvetica-Bold')
+     .fontSize(10.5)
+     .fillColor(BRAND.charcoal)
+     .text(s.title, cX + 14, cY + 48)
+  doc.restore()
+
+  // Bullet items
+  let itemY = cY + 68
+  s.bullets.forEach((bullet) => {
+    doc.save()
+    // Dot bullet
+    doc.circle(cX + 17, itemY + 3.5, 1.2).fill(BRAND.purple)
+    // Label
+    doc.font('Helvetica')
+       .fontSize(8)
+       .fillColor(BRAND.midGray)
+       .text(bullet, cX + 24, itemY)
+    doc.restore()
+    itemY += 14
+  })
+})
+
+drawPageFooter(doc, 3)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PAGE 4: WHY CHOOSE US & PROCESS
+// ══════════════════════════════════════════════════════════════════════════════
+doc.addPage()
+drawPageHeader(doc, 4)
+
+py = 124
+doc.save()
+doc.font('Helvetica-Bold')
+   .fontSize(22)
+   .fillColor(BRAND.charcoal)
+   .text('Why Choose Us', MARGIN, py)
+doc.restore()
+
+py += 36
+
+// 6 checkmark items
+const whyItems = [
+  'AI First', 'Data Driven', 'Creative Excellence',
+  'End-to-End Solutions', 'Transparent Reporting', 'Scalable Growth'
+]
+
+const wColW = CW / 3
+whyItems.forEach((item, idx) => {
+  const col = idx % 3
+  const row = Math.floor(idx / 3)
+  const itemX = MARGIN + col * wColW
+  const itemY = py + row * 26
+
+  drawCheck(doc, itemX, itemY, item)
+})
+
+py += 74
 
 doc.save()
-doc.font('Helvetica')
-   .fontSize(7)
+doc.font('Helvetica-Bold')
+   .fontSize(20)
+   .fillColor(BRAND.charcoal)
+   .text('Working Process', MARGIN, py)
+doc.restore()
+
+py += 38
+
+// 5 Process steps
+const steps = ['Discovery', 'Strategy', 'Creation', 'Execution', 'Optimization']
+const sColW = CW / 5
+
+steps.forEach((step, idx) => {
+  const sX = MARGIN + idx * sColW
+
+  // Large process numbers (e.g. 01, 02...)
+  doc.save()
+  doc.font('Helvetica-Bold')
+     .fontSize(22)
+     .fillColor(BRAND.lightGray)
+     .text(String(idx + 1).padStart(2, '0'), sX, py)
+  doc.restore()
+
+  // Label
+  doc.save()
+  doc.font('Helvetica-Bold')
+     .fontSize(9.5)
+     .fillColor(BRAND.charcoal)
+     .text(step, sX, py + 26)
+  doc.restore()
+})
+
+drawPageFooter(doc, 4)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PAGE 5: LEADERSHIP & INDUSTRIES SERVED
+// ══════════════════════════════════════════════════════════════════════════════
+doc.addPage()
+drawPageHeader(doc, 5)
+
+py = 124
+doc.save()
+doc.font('Helvetica-Bold')
+   .fontSize(22)
+   .fillColor(BRAND.charcoal)
+   .text('Leadership Team', MARGIN, py)
+doc.restore()
+
+py += 36
+
+const leaders = [
+  { role: 'Founder', name: 'Amirthashree\nVijayakumar', desc: 'Driving the vision of AI-\nintegrated marketing\nstrategies for global brands.' },
+  { role: 'Co-Founder', name: 'Co-Founder Name', desc: 'Leading operations and\ntechnical implementation\nacross all client projects.' },
+  { role: 'Creative Head', name: 'Camera & Editor', desc: 'Overseeing visual\nstorytelling and high-fidelity\nvideo production.' }
+]
+
+const lColW = (CW - 16) / 3
+const lColH = 168
+
+leaders.forEach((l, idx) => {
+  const lX = MARGIN + idx * (lColW + 8)
+
+  doc.save()
+  // Card base
+  doc.roundedRect(lX, py, lColW, lColH, 8)
+     .fillColor(BRAND.white)
+     .fill()
+  doc.roundedRect(lX, py, lColW, lColH, 8)
+     .lineWidth(0.5)
+     .strokeColor(BRAND.lightGray)
+     .stroke()
+
+  // "PHOTO" placeholder box
+  doc.roundedRect(lX + 16, py + 16, lColW - 32, 22, 4)
+     .fillColor(BRAND.nearWhite)
+     .fill()
+  doc.roundedRect(lX + 16, py + 16, lColW - 32, 22, 4)
+     .lineWidth(0.5)
+     .strokeColor(BRAND.lightGray)
+     .stroke()
+  
+  doc.font('Helvetica-Bold')
+     .fontSize(7)
+     .fillColor(BRAND.midGray)
+     .text('PHOTO', lX, py + 23, { width: lColW, align: 'center', characterSpacing: 0.5 })
+
+  // Role tag
+  doc.font('Helvetica-Bold')
+     .fontSize(7)
+     .fillColor(BRAND.midGray)
+     .text(l.role.toUpperCase(), lX + 16, py + 52, { characterSpacing: 0.5 })
+
+  // Name
+  doc.font('Helvetica-Bold')
+     .fontSize(10.5)
+     .fillColor(BRAND.charcoal)
+     .text(l.name, lX + 16, py + 64, { lineGap: 1 })
+
+  // Biography description
+  doc.font('Helvetica')
+     .fontSize(8)
+     .fillColor(BRAND.midGray)
+     .text(l.desc, lX + 16, py + 110, { width: lColW - 32, lineGap: 2 })
+  doc.restore()
+})
+
+py += lColH + 24
+
+doc.save()
+doc.font('Helvetica-Bold')
+   .fontSize(18)
+   .fillColor(BRAND.charcoal)
+   .text('Industries Served', MARGIN, py)
+doc.restore()
+
+py += 26
+
+const industries = [
+  'E-commerce & Retail', 'Real Estate', 'Health & Wellness',
+  'Technology & SaaS', 'Education & EdTech', 'Finance & Fintech'
+]
+
+const indColW = CW / 2
+industries.forEach((ind, idx) => {
+  const col = idx % 2
+  const row = Math.floor(idx / 2)
+  const indX = MARGIN + col * indColW
+  const indY = py + row * 20
+
+  doc.save()
+  doc.circle(indX + 4, indY + 5.5, 1.5).fill(BRAND.purple)
+  doc.font('Helvetica')
+     .fontSize(9.5)
+     .fillColor(BRAND.charcoal)
+     .text(ind, indX + 14, indY)
+  doc.restore()
+})
+
+drawPageFooter(doc, 5)
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PAGE 6: CONTACT & CLOSING
+// ══════════════════════════════════════════════════════════════════════════════
+doc.addPage()
+drawPageHeader(doc, 6)
+
+py = 124
+doc.save()
+doc.font('Helvetica-Bold')
+   .fontSize(22)
+   .fillColor(BRAND.charcoal)
+   .text("Let's Build Your Growth Story", MARGIN, py)
+doc.restore()
+
+py += 36
+
+// Contact details card block
+doc.save()
+doc.roundedRect(MARGIN, py, CW, 120, 8)
+   .fillColor(BRAND.nearWhite)
+   .fill()
+doc.roundedRect(MARGIN, py, CW, 120, 8)
+   .lineWidth(0.5)
+   .strokeColor(BRAND.lightGray)
+   .stroke()
+
+doc.font('Helvetica-Bold')
+   .fontSize(7.5)
    .fillColor(BRAND.midGray)
-   .text('Version 1.0  ·  Issued July 2026', RIGHT_X - 108, FOOTER_Y + 16, { lineBreak: false })
+   .text('CONTACT DETAILS', MARGIN + 16, py + 14, { characterSpacing: 0.5 })
+
+// Contact lists
+const listY1 = py + 28
+doc.font('Helvetica-Bold')
+   .fontSize(9.5)
+   .fillColor(BRAND.charcoal)
+   .text('Website:', MARGIN + 16, listY1, { lineBreak: false })
+   .font('Helvetica')
+   .text(' www.thethreeamigos.in', MARGIN + 60, listY1, { lineBreak: false })
+
+doc.font('Helvetica-Bold')
+   .fontSize(9.5)
+   .text('Email:', MARGIN + 16, listY1 + 14, { lineBreak: false })
+   .font('Helvetica')
+   .text(' thethreeamigosdm@gmail.com', MARGIN + 48, listY1 + 14, { lineBreak: false })
+
+doc.font('Helvetica-Bold')
+   .fontSize(9.5)
+   .text('Location:', MARGIN + 16, listY1 + 28, { lineBreak: false })
+   .font('Helvetica')
+   .text(' Tamil Nadu, India', MARGIN + 64, listY1 + 28, { lineBreak: false })
+
+// Social follows
+doc.font('Helvetica-Bold')
+   .fontSize(7.5)
+   .fillColor(BRAND.midGray)
+   .text('FOLLOW US', MARGIN + 16, py + 78, { characterSpacing: 0.5 })
+
+doc.font('Helvetica')
+   .fontSize(9)
+   .fillColor(BRAND.charcoal)
+   .text('LinkedIn • Instagram • Facebook • YouTube', MARGIN + 16, py + 92)
+doc.restore()
+
+py += 140
+
+// Gradient bar banner: "Let's Grow Together"
+doc.save()
+doc.rect(MARGIN, py, CW, 38).fill(hGrad(doc, MARGIN, py, CW))
 doc.restore()
 
 doc.save()
 doc.font('Helvetica-Bold')
-   .fontSize(7)
-   .fillColor(BRAND.midGray)
-   .text('CONFIDENTIAL', RIGHT_X - 54, FOOTER_Y + 28, { lineBreak: false, characterSpacing: 0.4 })
+   .fontSize(16)
+   .fillColor(BRAND.charcoal)
+   .text("Let's Grow Together", MARGIN, py + 11, { width: CW, align: 'center', characterSpacing: 0.5 })
 doc.restore()
 
-// Page number — right-aligned
+py += 54
+
 doc.save()
 doc.font('Helvetica')
-   .fontSize(7)
-   .fillColor(BRAND.midGray)
-   .text('Page 1 of 1', RIGHT_X - 42, FOOTER_Y + 39, { lineBreak: false })
+   .fontSize(10.5)
+   .fillColor(BRAND.charcoal)
+   .text('Schedule Your Free Marketing Audit', MARGIN, py, { width: CW, align: 'center' })
 doc.restore()
 
-// ── Thin vertical separator lines in footer ───────────────────────────────────
+py += 20
+
+// Filled button: "Get Started"
+const btnW = 100
+const btnH = 26
+const btnX = (PAGE_W - btnW) / 2
 doc.save()
-// Left separator (between logo col and centre col)
-doc.rect(CENTRE_X - 104, FOOTER_Y + 14, 0.4, FOOTER_H - 28)
-   .fillOpacity(0.15)
-   .fill(BRAND.midGray)
-// Right separator (between centre col and meta col)
-doc.rect(CENTRE_X + 66, FOOTER_Y + 14, 0.4, FOOTER_H - 28)
-   .fillOpacity(0.15)
-   .fill(BRAND.midGray)
+doc.roundedRect(btnX, py, btnW, btnH, 13)
+   .fillColor(BRAND.purple)
+   .fill()
+doc.font('Helvetica-Bold')
+   .fontSize(8.5)
+   .fillColor(BRAND.white)
+   .text('Get Started', btnX, py + 9, { width: btnW, align: 'center' })
 doc.restore()
+
+py += 44
+
+// Bottom Logo and closing greeting
+drawLogoBox(doc, (PAGE_W - 44) / 2, py, 44)
+
+doc.save()
+doc.font('Helvetica-Bold')
+   .fontSize(11)
+   .fillColor(BRAND.charcoal)
+   .text('Thank You', MARGIN, py + 54, { width: CW, align: 'center' })
+doc.restore()
+
+drawPageFooter(doc, 6)
 
 // ══════════════════════════════════════════════════════════════════════════════
-// FINALIZE
+// Buffered Pages loop to draw dynamic Page Numbers & footer on every page
+// ══════════════════════════════════════════════════════════════════════════════
+
+const range = doc.bufferedPageRange() // start: 0, count: 6
+
+for (let i = range.start; i < range.start + range.count; i++) {
+  // Switched to page inside the drawing loop
+  doc.switchToPage(i)
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// FINALIZE & EXPORT
 // ══════════════════════════════════════════════════════════════════════════════
 
 doc.end()
 
 writeStream.on('finish', () => {
   const stat = fs.statSync(OUTPUT)
-  console.log(`\n✅  Premium Company Profile PDF generated`)
+  console.log(`\n✅  Premium 6-Page Company Profile PDF generated successfully!`)
   console.log(`    Path : ${OUTPUT}`)
-  console.log(`    Size : ${(stat.size / 1024).toFixed(1)} KB\n`)
+  console.log(`    Size : ${(stat.size / 1024).toFixed(1)} KB`)
+  console.log(`    Pages: ${range.count}\n`)
 })
 
 writeStream.on('error', (err) => {

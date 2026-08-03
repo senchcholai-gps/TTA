@@ -60,7 +60,7 @@ export function InstagramReelCard({ item }: { item: PortfolioItem }) {
         href={item.url} 
         target="_blank" 
         rel="noopener noreferrer" 
-        className="w-full aspect-[9/16] max-h-[360px] bg-slate-50 relative overflow-hidden flex-shrink-0 border-b border-gray-100 block cursor-pointer group/thumb"
+        className="w-full aspect-[9/16] max-h-[220px] xs:max-h-[280px] sm:max-h-[320px] md:max-h-[360px] bg-slate-50 relative overflow-hidden flex-shrink-0 border-b border-gray-100 block cursor-pointer group/thumb"
       >
         <img
           src={item.thumbnail}
@@ -73,8 +73,8 @@ export function InstagramReelCard({ item }: { item: PortfolioItem }) {
         
         {/* Centered Translucent Play Button Overlay */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-md border border-white/40 flex items-center justify-center text-white shadow-md transform group-hover/thumb:scale-110 transition duration-300">
-            <svg className="w-5 h-5 fill-current translate-x-0.5" viewBox="0 0 24 24">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/20 backdrop-blur-md border border-white/40 flex items-center justify-center text-white shadow-md transform group-hover/thumb:scale-110 transition duration-300">
+            <svg className="w-4.5 h-4.5 sm:w-5 sm:h-5 fill-current translate-x-0.5" viewBox="0 0 24 24">
               <polygon points="5 3 19 12 5 21 5 3"/>
             </svg>
           </div>
@@ -82,8 +82,8 @@ export function InstagramReelCard({ item }: { item: PortfolioItem }) {
       </a>
       
       {/* Content Area */}
-      <div className="p-7 flex flex-col flex-grow justify-between">
-        <div className="space-y-3">
+      <div className="p-3 sm:p-5 lg:p-7 flex flex-col flex-grow justify-between">
+        <div className="space-y-2 sm:space-y-3">
           {/* Label */}
           <div className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-widest text-brand-purple">
             <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -95,23 +95,23 @@ export function InstagramReelCard({ item }: { item: PortfolioItem }) {
           </div>
           
           {/* Title */}
-          <h3 className="text-lg font-bold text-neutral-black leading-snug group-hover:text-brand-purple group-hover:-translate-y-1 transition-all duration-300 line-clamp-2">
+          <h3 className="text-xs sm:text-base lg:text-lg font-bold text-neutral-black leading-snug group-hover:text-brand-purple group-hover:-translate-y-1 transition-all duration-300 line-clamp-2">
             {item.title}
           </h3>
           
           {/* Description */}
-          <p className="text-[15px] text-neutral-black/65 leading-relaxed line-clamp-2 font-medium">
+          <p className="hidden sm:block text-xs sm:text-[15px] text-neutral-black/65 leading-relaxed line-clamp-2 font-medium">
             {item.description}
           </p>
         </div>
         
         {/* Button CTA */}
-        <div className="pt-5 mt-6 border-t border-gray-100 flex-shrink-0">
+        <div className="pt-3 sm:pt-5 mt-3 sm:mt-6 border-t border-gray-100 flex-shrink-0">
           <a
             href={item.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full py-3 px-4 bg-brand-gradient text-white rounded-xl text-xs font-bold hover:shadow-[0_8px_30px_rgba(214,0,60,0.35)] transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer group/btn"
+            className="w-full py-2.5 sm:py-3 px-3 sm:px-4 bg-brand-gradient text-white rounded-xl text-[10px] sm:text-xs font-bold hover:shadow-[0_8px_30px_rgba(214,0,60,0.35)] transition-all duration-300 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer group/btn"
           >
             <span className="group-hover/btn:translate-x-0.5 transition-transform duration-300">Open Reel</span>
             <svg className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -134,7 +134,7 @@ export function YouTubeShowcaseCard({ item }: { item: PortfolioItem }) {
   return (
     <div className="bg-white border border-gray-150 rounded-[20px] shadow-sm hover:shadow-lg hover:border-brand-purple/20 transition-all duration-300 overflow-hidden flex flex-col md:flex-row group h-full">
       {/* Visual / Player Area */}
-      <div className="w-full md:w-1/2 aspect-[16/9] md:aspect-auto md:h-auto min-h-[200px] bg-slate-100 relative overflow-hidden flex-shrink-0">
+      <div className="w-full md:w-1/2 aspect-[16/9] md:aspect-auto md:h-auto min-h-[160px] xs:min-h-[180px] sm:min-h-[200px] bg-slate-100 relative overflow-hidden flex-shrink-0">
         {isPlaying ? (
           <iframe
             src={`https://www.youtube.com/embed/${ytId}?autoplay=1`}
@@ -173,8 +173,8 @@ export function YouTubeShowcaseCard({ item }: { item: PortfolioItem }) {
       </div>
       
       {/* Content Area */}
-      <div className="p-6 md:p-8 flex flex-col justify-between flex-grow">
-        <div className="space-y-4">
+      <div className="p-5 md:p-8 flex flex-col justify-between flex-grow">
+        <div className="space-y-2 sm:space-y-4">
           <div className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-widest text-brand-red">
             <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24">
               <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.518 3.545 12 3.545 12 3.545s-7.518 0-9.388.508a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.87.508 9.388.508 9.388.508s7.518 0 9.388-.508a3.003 3.003 0 0 0 2.11-2.11c.502-1.87.502-5.837.502-5.837s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
@@ -191,7 +191,7 @@ export function YouTubeShowcaseCard({ item }: { item: PortfolioItem }) {
           </p>
         </div>
         
-        <div className="pt-5 mt-6 border-t border-gray-100 flex items-center justify-between flex-shrink-0">
+        <div className="pt-4 sm:pt-5 mt-4 sm:mt-6 border-t border-gray-100 flex items-center justify-between flex-shrink-0">
           <div className="text-[10px] text-neutral-black/50 font-bold flex items-center gap-1.5">
             <span>Duration:</span>
             <span className="text-neutral-black font-extrabold">{item.duration}</span>
@@ -302,6 +302,191 @@ export function YouTubeVerticalCard({ item }: { item: PortfolioItem }) {
 }
 
 
+// ─── Portfolio Card Header Background (Platform-Specific) ────────────────────
+function PortfolioHeaderBackground({ platform }: { platform: string }) {
+  const isYT = platform === 'YouTube'
+  const isIG = platform === 'Instagram'
+  const isFB = platform === 'Facebook'
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none select-none z-0">
+      {/* 1. Base Gradient Background */}
+      {isYT && (
+        <div className="absolute inset-0 bg-gradient-to-br from-rose-50/50 via-slate-50 to-rose-100/30" />
+      )}
+      {isIG && (
+        <div className="absolute inset-0 bg-gradient-to-br from-pink-50/40 via-purple-50/30 to-indigo-100/20" />
+      )}
+      {isFB && (
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/40 via-slate-50 to-indigo-100/25" />
+      )}
+      {!isYT && !isIG && !isFB && (
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-50/40 via-slate-50 to-fuchsia-100/20" />
+      )}
+
+      {/* 2. Soft Ambient Glowing Mesh Blobs */}
+      {isYT && (
+        <>
+          <motion.div
+            animate={{ x: [-12, 8, -12], y: [-8, 12, -8] }}
+            transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute -top-12 -left-12 w-32 h-32 bg-red-500/10 rounded-full blur-2xl"
+          />
+          <motion.div
+            animate={{ x: [8, -12, 8], y: [12, -8, 12] }}
+            transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute -bottom-12 -right-12 w-32 h-32 bg-rose-500/12 rounded-full blur-2xl"
+          />
+        </>
+      )}
+      {isIG && (
+        <>
+          <motion.div
+            animate={{ x: [-8, 12, -8], y: [-12, 8, -12] }}
+            transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute -top-12 -left-12 w-32 h-32 bg-purple-500/12 rounded-full blur-2xl"
+          />
+          <motion.div
+            animate={{ x: [12, -8, 12], y: [8, -12, 8] }}
+            transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute -bottom-12 -right-12 w-32 h-32 bg-pink-500/12 rounded-full blur-2xl"
+          />
+        </>
+      )}
+      {isFB && (
+        <>
+          <motion.div
+            animate={{ x: [-10, 10, -10], y: [-10, 10, -10] }}
+            transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute -top-12 -left-12 w-32 h-32 bg-blue-500/12 rounded-full blur-2xl"
+          />
+          <motion.div
+            animate={{ x: [10, -10, 10], y: [10, -10, 10] }}
+            transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute -bottom-12 -right-12 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl"
+          />
+        </>
+      )}
+      {!isYT && !isIG && !isFB && (
+        <>
+          <motion.div
+            animate={{ x: [-12, 12, -12], y: [-12, 12, -12] }}
+            transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute -top-12 -left-12 w-32 h-32 bg-violet-500/10 rounded-full blur-2xl"
+          />
+          <motion.div
+            animate={{ x: [12, -12, 12], y: [12, -12, 12] }}
+            transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute -bottom-12 -right-12 w-32 h-32 bg-fuchsia-500/10 rounded-full blur-2xl"
+          />
+        </>
+      )}
+
+      {/* 3. Dotted Pattern Grid */}
+      <div className="absolute inset-0 opacity-[0.035] bg-[radial-gradient(#4f46e5_1px,transparent_1px)] [background-size:12px_12px]" />
+
+      {/* 4. Platform-Specific Motifs */}
+      {isYT && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          {/* Floating play button outline */}
+          <motion.div
+            animate={{ rotate: [0, 6, -6, 0], scale: [1, 1.04, 0.96, 1] }}
+            transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute w-28 h-28 border border-red-500/15 flex items-center justify-center opacity-85"
+            style={{ borderRadius: '24px' }}
+          >
+            <svg className="w-8 h-8 fill-none stroke-red-500/20 stroke-[1.5]" viewBox="0 0 24 24">
+              <polygon points="5 3 19 12 5 21 5 3" />
+            </svg>
+          </motion.div>
+          {/* YouTube Video Timeline */}
+          <div className="absolute bottom-4 left-6 right-6 h-[2px] bg-red-500/10 rounded-full">
+            <motion.div
+              animate={{ left: ['0%', '100%', '0%'] }}
+              transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
+              className="absolute top-1/2 -translate-y-1/2 w-2 h-2 bg-red-500/30 rounded-full shadow-xs"
+            />
+          </div>
+        </div>
+      )}
+
+      {isIG && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          {/* Slow concentric gradient rings */}
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 45, repeat: Infinity, ease: 'linear' }}
+            className="absolute w-36 h-36 border border-dashed border-pink-500/15 rounded-full"
+          />
+          <motion.div
+            animate={{ rotate: -360 }}
+            transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
+            className="absolute w-26 h-26 border border-dotted border-purple-500/20 rounded-full"
+          />
+          {/* Instagram Viewfinder Camera Corners */}
+          <div className="absolute inset-5 border border-pink-500/5 rounded-[12px]">
+            <div className="absolute -top-1 -left-1 w-2 h-2 border-t-2 border-l-2 border-pink-500/15" />
+            <div className="absolute -top-1 -right-1 w-2 h-2 border-t-2 border-r-2 border-pink-500/15" />
+            <div className="absolute -bottom-1 -left-1 w-2 h-2 border-b-2 border-l-2 border-pink-500/15" />
+            <div className="absolute -bottom-1 -right-1 w-2 h-2 border-b-2 border-r-2 border-pink-500/15" />
+          </div>
+        </div>
+      )}
+
+      {isFB && (
+        <div className="absolute inset-0">
+          {/* Community Connected Grid Nodes */}
+          <svg className="absolute inset-0 w-full h-full text-blue-500/15" xmlns="http://www.w3.org/2000/svg">
+            <motion.circle
+              animate={{ cx: [30, 42, 30], cy: [40, 52, 40] }}
+              transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+              r="3"
+              fill="currentColor"
+            />
+            <motion.circle
+              animate={{ cx: [150, 142, 150], cy: [110, 98, 110] }}
+              transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+              r="3"
+              fill="currentColor"
+            />
+            <motion.circle
+              animate={{ cx: [280, 268, 280], cy: [35, 47, 35] }}
+              transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
+              r="3"
+              fill="currentColor"
+            />
+            <motion.path
+              animate={{ d: ['M 30 40 L 150 110', 'M 42 52 L 142 98', 'M 30 40 L 150 110'] }}
+              transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
+              stroke="currentColor"
+              strokeWidth="0.75"
+              fill="none"
+              strokeDasharray="4 4"
+            />
+            <motion.path
+              animate={{ d: ['M 150 110 L 280 35', 'M 142 98 L 268 47', 'M 150 110 L 280 35'] }}
+              transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+              stroke="currentColor"
+              strokeWidth="0.75"
+              fill="none"
+              strokeDasharray="4 4"
+            />
+          </svg>
+          {/* Facebook Live wave signal block */}
+          <div className="absolute bottom-4 left-6 flex gap-1 items-end">
+            <motion.div animate={{ height: [4, 11, 4] }} transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut', delay: 0 }} className="w-0.5 bg-blue-500/20 rounded-full" />
+            <motion.div animate={{ height: [6, 17, 6] }} transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut', delay: 0.25 }} className="w-0.5 bg-blue-500/20 rounded-full" />
+            <motion.div animate={{ height: [8, 13, 8] }} transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }} className="w-0.5 bg-blue-500/20 rounded-full" />
+          </div>
+        </div>
+      )}
+
+      {/* 5. Diagonal Ambient Light Streak */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.03] to-transparent rotate-12" />
+    </div>
+  )
+}
+
 // 3. Brand Management Card
 export function BrandManagementCard({ item }: { item: PortfolioItem }) {
   const isYouTube = item.platformName === 'YouTube'
@@ -311,14 +496,20 @@ export function BrandManagementCard({ item }: { item: PortfolioItem }) {
   return (
     <div className="bg-white/90 backdrop-blur-xs border border-gray-150 rounded-[20px] shadow-sm hover:shadow-xl hover:border-brand-magenta/30 hover:-translate-y-1 transition-all duration-300 flex flex-col h-full overflow-hidden group">
       {/* Visual Media Header Frame - Matching Aspect Ratio of Other Cards */}
-      <div className="w-full aspect-[16/9] bg-slate-50 relative overflow-hidden flex-shrink-0 border-b border-gray-100 flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100">
-        {/* Large Profile Image/Logo */}
-        <ClientAvatar 
-          logo={item.clientLogo} 
-          name={item.clientName} 
-          className="w-20 h-20 text-2xl shadow-sm border border-gray-250 bg-white" 
-          imgPaddingClass="p-3" 
-        />
+      <div className="w-full aspect-[16/9] relative overflow-hidden flex-shrink-0 border-b border-gray-100 flex items-center justify-center">
+        {/* Layered platform background decoration */}
+        <PortfolioHeaderBackground platform={item.platformName || ''} />
+
+        {/* Large Profile Image/Logo wrapped inside premium glassmorphism badge */}
+        <div className="relative z-10 p-2 rounded-full bg-white/20 backdrop-blur-md border border-white/40 shadow-[0_8px_32px_rgba(31,38,135,0.06)] flex items-center justify-center hover:scale-105 transition duration-500">
+          <div className="absolute inset-0 rounded-full border border-white/25 animate-ping opacity-15" style={{ animationDuration: '3.5s' }} />
+          <ClientAvatar 
+            logo={item.clientLogo} 
+            name={item.clientName} 
+            className="w-14 h-14 sm:w-18 sm:h-18 text-base sm:text-xl shadow-xs border border-gray-200/80 bg-white" 
+            imgPaddingClass="" 
+          />
+        </div>
         
         {/* Platform Badge/Icon Floating in Header */}
         <div className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/95 backdrop-blur-md flex items-center justify-center border border-gray-100 text-slate-400 shadow-xs z-10">
@@ -343,8 +534,8 @@ export function BrandManagementCard({ item }: { item: PortfolioItem }) {
       </div>
       
       {/* Content Area */}
-      <div className="p-7 flex flex-col flex-grow justify-between">
-        <div className="space-y-3">
+      <div className="p-5 sm:p-7 flex flex-col flex-grow justify-between">
+        <div className="space-y-2 sm:space-y-3">
           <div className="flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-widest text-brand-purple">
             <span>{item.platformName} Managed Page</span>
           </div>
@@ -359,7 +550,7 @@ export function BrandManagementCard({ item }: { item: PortfolioItem }) {
         </div>
         
         {/* CTA Button */}
-        <div className="pt-5 mt-6 border-t border-gray-100 flex-shrink-0">
+        <div className="pt-4 sm:pt-5 mt-4 sm:mt-6 border-t border-gray-100 flex-shrink-0">
           <a
             href={item.url}
             target="_blank"
@@ -459,7 +650,7 @@ export default function PortfolioGrid() {
                   <span className="group-hover:translate-x-1 transition-transform">→</span>
                 </button>
               </div>
-              <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
                 {reelsItems.slice(0, 3).map((item) => (
                   <InstagramReelCard key={item.id} item={item} />
                 ))}
@@ -488,7 +679,7 @@ export default function PortfolioGrid() {
                   <span className="group-hover:translate-x-1 transition-transform">→</span>
                 </button>
               </div>
-              <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
                 {youtubeItems.slice(0, 3).map((item) => (
                   <YouTubeVerticalCard key={item.id} item={item} />
                 ))}
@@ -517,7 +708,7 @@ export default function PortfolioGrid() {
                   <span className="group-hover:translate-x-1 transition-transform">→</span>
                 </button>
               </div>
-              <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
                 {managedPagesItems.slice(0, 3).map((item) => (
                   <BrandManagementCard key={item.id} item={item} />
                 ))}
@@ -528,7 +719,7 @@ export default function PortfolioGrid() {
         ) : (
           <motion.div
             layout
-            className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3"
+            className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3"
           >
             <AnimatePresence mode="popLayout">
               {filteredItems.map((item) => {

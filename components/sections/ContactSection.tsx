@@ -53,22 +53,39 @@ export default function ContactSection() {
     }
   }
 
-  const handleFormSubmit = (e: FormEvent) => {
+  const handleFormSubmit = async (e: FormEvent) => {
     e.preventDefault()
     if (!validateForm()) return
 
     setFormStatus('submitting')
-    // Simulate submission
-    setTimeout(() => {
-      setFormStatus('success')
-      setFormData({
-        name: '',
-        businessName: '',
-        phone: '',
-        servicesInterested: '',
-        budgetRange: ''
+    try {
+      const response = await fetch('/api/send', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       })
-    }, 1500)
+
+      const data = await response.json()
+
+      if (response.ok && data.success) {
+        setFormStatus('success')
+        setFormData({
+          name: '',
+          businessName: '',
+          phone: '',
+          servicesInterested: '',
+          budgetRange: ''
+        })
+      } else {
+        setFormStatus('error')
+        console.error('Audit submission error:', data.error || 'Unknown error')
+      }
+    } catch (error) {
+      setFormStatus('error')
+      console.error('Network error during audit submission:', error)
+    }
   }
 
 
@@ -83,15 +100,87 @@ export default function ContactSection() {
   ]
 
   return (
-    <section id="contact" className="py-24 bg-transparent overflow-hidden relative">
+    <section id="contact" className="py-14 sm:py-16 md:py-20 lg:py-24 bg-transparent overflow-hidden relative">
+
+      {/* === ELEGANT CONTACT BACKGROUND GLOW === */}
+      {!shouldReduceMotion && (
+        <>
+          {/* Central deep glow — behind the CTA */}
+          <motion.div
+            aria-hidden="true"
+            animate={{
+              scale: [1, 1.1, 1],
+              opacity: [0.05, 0.09, 0.05],
+            }}
+            transition={{ duration: 16, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-gradient-to-r from-brand-red/70 via-brand-magenta/60 to-brand-purple/70 rounded-full blur-[120px] pointer-events-none -z-10"
+          />
+
+          {/* Flanking orb — top-left */}
+          <motion.div
+            aria-hidden="true"
+            animate={{ x: [-25, 25, -25], y: [-10, 10, -10], opacity: [0.03, 0.06, 0.03] }}
+            transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
+            className="absolute top-0 -left-[10%] w-[450px] h-[450px] bg-gradient-to-br from-brand-red to-transparent rounded-full blur-[100px] pointer-events-none -z-10"
+          />
+
+          {/* Flanking orb — bottom-right */}
+          <motion.div
+            aria-hidden="true"
+            animate={{ x: [25, -25, 25], y: [10, -10, 10], opacity: [0.03, 0.06, 0.03] }}
+            transition={{ duration: 24, repeat: Infinity, ease: 'easeInOut', delay: 5 }}
+            className="absolute bottom-0 -right-[10%] w-[450px] h-[450px] bg-gradient-to-tl from-brand-purple to-transparent rounded-full blur-[100px] pointer-events-none -z-10"
+          />
+
+          {/* Thin gradient top rule */}
+          <motion.div
+            aria-hidden="true"
+            animate={{ scaleX: [0.5, 1, 0.5], opacity: [0.04, 0.09, 0.04] }}
+            transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute top-[12%] left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-red to-transparent pointer-events-none -z-10"
+          />
+
+          {/* Thin gradient bottom rule */}
+          <motion.div
+            aria-hidden="true"
+            animate={{ scaleX: [1, 0.6, 1], opacity: [0.04, 0.08, 0.04] }}
+            transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut', delay: 6 }}
+            className="absolute bottom-[15%] left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-purple to-transparent pointer-events-none -z-10"
+          />
+
+          {/* Floating particles */}
+          {[
+            { x: '8%',  y: '25%', dur: 12, delay: 0,   size: 4 },
+            { x: '92%', y: '20%', dur: 15, delay: 1.5, size: 3 },
+            { x: '85%', y: '65%', dur: 10, delay: 3,   size: 5 },
+            { x: '5%',  y: '72%', dur: 14, delay: 2,   size: 3 },
+            { x: '48%', y: '88%', dur: 17, delay: 0.5, size: 4 },
+            { x: '60%', y: '8%',  dur: 11, delay: 4,   size: 3 },
+          ].map((p, i) => (
+            <motion.div
+              key={i}
+              aria-hidden="true"
+              animate={{ y: [0, -14, 0], opacity: [0.08, 0.2, 0.08] }}
+              transition={{ duration: p.dur, repeat: Infinity, ease: 'easeInOut', delay: p.delay }}
+              className="absolute rounded-full bg-brand-magenta pointer-events-none -z-10"
+              style={{
+                left: p.x,
+                top: p.y,
+                width: p.size,
+                height: p.size,
+              }}
+            />
+          ))}
+        </>
+      )}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Heading */}
-        <FadeInView className="text-center mb-16">
+        <FadeInView className="text-center mb-8 sm:mb-12 lg:mb-16">
           <span className="text-sm font-bold text-brand-purple tracking-widest uppercase">
             Get In Touch
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-neutral-black mt-2 mb-4">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-neutral-black mt-2 mb-4">
             Free Marketing Audit
           </h2>
           <p className="text-lg text-neutral-black/75 max-w-2xl mx-auto">
@@ -99,11 +188,11 @@ export default function ContactSection() {
           </p>
         </FadeInView>
 
-        <div className="grid lg:grid-cols-12 gap-12 items-start">
+        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           
           {/* Left Column: Direct Info & Profile Download */}
           <div className="lg:col-span-5 space-y-6">
-            <div className="p-8 rounded-2xl border border-gray-150 bg-white/80 backdrop-blur-md shadow-sm space-y-6">
+            <div className="p-5 sm:p-8 rounded-2xl border border-gray-150 bg-white/80 backdrop-blur-md shadow-sm space-y-6">
               <h3 className="text-xl font-bold text-neutral-black">Let's Talk Growth</h3>
               <p className="text-sm text-neutral-black/70 leading-relaxed">
                 Have questions or want to check alignment before filling out the audit? Reach out directly to our team.
@@ -310,6 +399,13 @@ export default function ContactSection() {
                       </div>
                     </div>
 
+                    {formStatus === 'error' && (
+                      <div className="p-4 rounded-xl bg-red-50 border border-red-150 text-brand-red text-xs font-semibold flex items-center gap-2">
+                        <AlertCircle size={16} />
+                        <span>Failed to send audit request. Please try again or reach out directly to thethreeamigosdm@gmail.com</span>
+                      </div>
+                    )}
+
                     <motion.button
                       type="submit"
                       disabled={formStatus === 'submitting'}
@@ -342,3 +438,4 @@ export default function ContactSection() {
     </section>
   )
 }
+

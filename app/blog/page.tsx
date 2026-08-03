@@ -43,7 +43,7 @@ export default function BlogPage() {
   const featured = blogPosts[0]
 
   return (
-    <div className="w-full bg-white relative min-h-screen flex flex-col justify-between">
+    <div className="w-full bg-transparent relative min-h-screen flex flex-col justify-between">
       <div>
         <Header />
         <BlogHero />

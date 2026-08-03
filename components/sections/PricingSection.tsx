@@ -64,7 +64,7 @@ const PricingCard = memo(function PricingCard({
               transition: { duration: 0.25, ease: CUBIC_EASE },
             }
       }
-      className="bg-white/90 backdrop-blur-md border border-gray-150 rounded-3xl shadow-sm hover:shadow-2xl hover:border-brand-purple/35 transition-all duration-300 flex flex-col justify-between h-full p-8 relative overflow-hidden group text-center"
+      className="bg-white/90 backdrop-blur-md border border-gray-150 rounded-3xl shadow-sm hover:shadow-2xl hover:border-brand-purple/35 transition-all duration-300 flex flex-col justify-between h-full p-5 sm:p-8 relative overflow-hidden group text-center"
     >
       {/* Moving Light Sweep on Hover */}
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
@@ -147,7 +147,7 @@ export default function PricingSection() {
   return (
     <section
       id="pricing"
-      className="py-24 bg-transparent overflow-hidden relative"
+      className="py-14 sm:py-16 md:py-20 lg:py-24 bg-transparent overflow-hidden relative"
     >
       {/* Decorative Drifting Background Radial Blobs (3-6% opacity, 20-30s loop) */}
       {!shouldReduceMotion && (
@@ -168,11 +168,11 @@ export default function PricingSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Section Header */}
-        <FadeInView className="text-center mb-16">
+        <FadeInView className="text-center mb-8 sm:mb-12 lg:mb-16">
           <span className="text-sm font-bold text-brand-purple tracking-widest uppercase">
             Flexible Engagement Models
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-neutral-black mt-2 mb-4">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-neutral-black mt-2 mb-4">
             Pricing Packages
           </h2>
           <p className="text-lg text-neutral-black/75 max-w-2xl mx-auto">
@@ -182,7 +182,7 @@ export default function PricingSection() {
 
         {/* Pricing Cards — stagger reveal */}
         <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-stretch"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5 lg:gap-8 items-stretch"
           variants={shouldReduceMotion ? undefined : containerVariants}
           initial={shouldReduceMotion ? undefined : 'hidden'}
           whileInView={shouldReduceMotion ? undefined : 'visible'}
@@ -201,3 +201,4 @@ export default function PricingSection() {
     </section>
   )
 }
+

@@ -25,13 +25,13 @@ export const metadata: Metadata = {
 
 export default function PortfolioPage() {
   return (
-    <div className="w-full bg-white relative">
+    <div className="w-full bg-transparent relative">
       <Header />
       
       {/* Main Content Area with Backgrounds and clipping */}
       <div className="relative overflow-hidden w-full animate-fade-in">
         {/* Background Radial Glow */}
-        <div className="absolute inset-0 bg-radial-[circle_at_center,var(--color-neutral-white)_0%,#fafafa_100%] pointer-events-none" />
+        <div className="absolute inset-0 bg-radial-[circle_at_center,rgba(253,251,255,0.75)_0%,rgba(253,251,255,0.25)_100%] pointer-events-none" />
         
         {/* Subtle Purple/Pink Radial Glow Bubbles */}
         <div className="absolute top-20 right-10 w-96 h-96 bg-gradient-to-br from-brand-red/10 to-brand-magenta/10 rounded-full blur-3xl pointer-events-none" />

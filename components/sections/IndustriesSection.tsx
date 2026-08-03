@@ -48,27 +48,21 @@ interface IndustryCardProps {
   industry: Industry
   index: number
   shouldReduceMotion: boolean | null
-  mouseX: number
-  mouseY: number
 }
 
-// Progressive Cascading Wave Scroll Reveal (0.7s, 60ms delay per card, blur 10px -> 0)
+// Clean, professional entrance animation: subtle 16px vertical fade-in with 80ms stagger wave
 const cardVariants: Variants = {
   hidden: {
     opacity: 0,
-    y: 40,
-    filter: 'blur(10px)',
-    scale: 0.96
+    y: 16,
   },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    filter: 'blur(0px)',
-    scale: 1,
     transition: {
-      duration: 0.7,
+      duration: 0.6,
       ease: CUBIC_EASE,
-      delay: i * 0.06, // 60ms stagger wave per card
+      delay: i * 0.08,
     },
   }),
 }
@@ -77,41 +71,23 @@ const IndustryCard = memo(function IndustryCard({
   industry,
   index,
   shouldReduceMotion,
-  mouseX,
-  mouseY
 }: IndustryCardProps) {
   const Icon = ICON_MAP[industry.icon] ?? Briefcase
   const float = FLOAT_CONFIGS[index % FLOAT_CONFIGS.length]
-
-  // Subtle Mouse Parallax translation & rotation
-  const parallaxX = shouldReduceMotion ? 0 : mouseX * (index % 2 === 0 ? 5 : -5)
-  const parallaxY = shouldReduceMotion ? 0 : mouseY * (index % 3 === 0 ? 5 : -5)
-  const parallaxRotate = shouldReduceMotion ? 0 : mouseX * (index % 2 === 0 ? 0.6 : -0.6)
 
   return (
     <motion.div
       custom={index}
       variants={shouldReduceMotion ? undefined : cardVariants}
-      animate={
-        shouldReduceMotion
-          ? undefined
-          : {
-              x: parallaxX,
-              y: parallaxY,
-              rotate: parallaxRotate,
-              transition: { duration: 0.6, ease: CUBIC_EASE }
-            }
-      }
       whileHover={
         shouldReduceMotion
           ? undefined
           : {
-              y: -12,
-              scale: 1.02,
-              transition: { duration: 0.45, ease: CUBIC_EASE },
+              y: -8,
+              transition: { duration: 0.3, ease: CUBIC_EASE },
             }
       }
-      className="relative group p-8 rounded-3xl border border-gray-150 bg-white/90 backdrop-blur-md shadow-sm transition-all duration-450 hover:shadow-2xl hover:border-brand-purple/40 flex flex-col h-full overflow-hidden select-none min-w-[280px] sm:min-w-0"
+      className="relative group p-4 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl border border-gray-150 bg-white/90 backdrop-blur-md shadow-sm transition-all duration-450 hover:shadow-2xl hover:border-brand-purple/40 flex flex-col h-full overflow-hidden select-none"
     >
       {/* Light Sweep on Hover */}
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
@@ -120,7 +96,7 @@ const IndustryCard = memo(function IndustryCard({
       <div className="absolute top-0 left-6 right-6 h-[3px] bg-gradient-to-r from-brand-red via-brand-magenta to-brand-purple rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
       {/* Independent Floating & Pulsing Icon */}
-      <div className="mb-6">
+      <div className="mb-4 sm:mb-6">
         <motion.div
           animate={
             shouldReduceMotion
@@ -132,7 +108,7 @@ const IndustryCard = memo(function IndustryCard({
               ? undefined
               : { duration: float.duration, delay: float.delay, repeat: Infinity, ease: 'easeInOut' }
           }
-          className={`w-14 h-14 rounded-2xl flex items-center justify-center bg-gradient-to-br ${industry.accent} group-hover:bg-brand-gradient group-hover:scale-105 shadow-xs transition-all duration-300`}
+          className={`w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center bg-gradient-to-br ${industry.accent} group-hover:bg-brand-gradient group-hover:scale-105 shadow-xs transition-all duration-300`}
         >
           <motion.div
             animate={
@@ -152,7 +128,7 @@ const IndustryCard = memo(function IndustryCard({
         </motion.div>
       </div>
 
-      <h3 className="text-xl font-bold text-neutral-black mb-3 group-hover:text-brand-purple transition-colors duration-300">
+      <h3 className="text-base sm:text-xl font-bold text-neutral-black mb-2 sm:mb-3 group-hover:text-brand-purple transition-colors duration-300">
         {industry.name}
       </h3>
       <p className="text-sm text-neutral-black/70 leading-relaxed flex-grow font-medium">
@@ -185,7 +161,7 @@ export default function IndustriesSection() {
       id="industries"
       aria-label="Industries we serve"
       onMouseMove={handleMouseMove}
-      className="relative py-24 bg-transparent overflow-hidden"
+      className="relative py-14 sm:py-16 md:py-20 lg:py-24 bg-transparent overflow-hidden"
     >
       {/* Ambient Drifting Background Glows (Purple 3% blur 240px & Pink 2% blur 300px) */}
       {!shouldReduceMotion && (
@@ -219,12 +195,12 @@ export default function IndustriesSection() {
           whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0, filter: 'blur(0px)' }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.8, ease: CUBIC_EASE }}
-          className="text-center mb-16"
+          className="text-center mb-8 sm:mb-12 lg:mb-16"
         >
           <span className="text-sm font-bold text-brand-purple tracking-widest uppercase">
             Industries We Serve
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-neutral-black mt-2 mb-4">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-neutral-black mt-2 mb-4">
             Tailored Marketing Solutions
           </h2>
           <motion.p
@@ -238,25 +214,10 @@ export default function IndustriesSection() {
           </motion.p>
         </motion.div>
 
-        {/* Responsive layout: Carousel on mobile, Cascading Wave Grid on desktop */}
+        {/* Responsive Grid Layout */}
         <div className="relative">
-          {/* Mobile carousel */}
-          <div className="flex md:hidden overflow-x-auto gap-4 pb-6 snap-x snap-mandatory scrollbar-none -mx-4 px-4">
-            {industries.map((ind, index) => (
-              <IndustryCard
-                key={ind.id}
-                industry={ind}
-                index={index}
-                shouldReduceMotion={shouldReduceMotion}
-                mouseX={mousePos.normX}
-                mouseY={mousePos.normY}
-              />
-            ))}
-          </div>
-
-          {/* Desktop grid — Progressive Wave Reveal (0->8) with Parallax & Floating */}
           <motion.div
-            className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch"
+            className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5 lg:gap-8 items-stretch"
             initial={shouldReduceMotion ? undefined : 'hidden'}
             whileInView={shouldReduceMotion ? undefined : 'visible'}
             viewport={{ once: true, amount: 0.15 }}
@@ -267,8 +228,6 @@ export default function IndustriesSection() {
                 industry={ind}
                 index={index}
                 shouldReduceMotion={shouldReduceMotion}
-                mouseX={mousePos.normX}
-                mouseY={mousePos.normY}
               />
             ))}
           </motion.div>
@@ -294,3 +253,4 @@ export default function IndustriesSection() {
     </section>
   )
 }
+

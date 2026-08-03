@@ -104,7 +104,7 @@ export default async function BlogPostPage({ params }: Props) {
   let sectionIndex = 0
 
   return (
-    <div className="w-full bg-white relative min-h-screen flex flex-col justify-between">
+    <div className="w-full bg-transparent relative min-h-screen flex flex-col justify-between">
       {/* Schema Markup */}
       <script
         type="application/ld+json"
@@ -115,7 +115,7 @@ export default async function BlogPostPage({ params }: Props) {
         <Header />
         <ReadingProgress />
 
-        <main className="py-12 bg-white">
+        <main className="py-12 bg-transparent">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             {/* Breadcrumb */}

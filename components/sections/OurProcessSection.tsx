@@ -62,7 +62,7 @@ const StepCard = memo(function StepCard({
       variants={shouldReduceMotion ? undefined : staggerItem}
       whileHover={shouldReduceMotion ? undefined : subtleCardHover}
       transition={{ duration: 0.28, ease: [0.25, 1, 0.5, 1] }}
-      className="relative p-7 bg-white rounded-[20px] border border-gray-150 shadow-sm hover:shadow-xl hover:border-brand-purple/20 transition-shadow duration-300 flex flex-col justify-between h-full overflow-hidden group z-10"
+      className="relative p-4 sm:p-6 lg:p-7 bg-white rounded-[20px] border border-gray-150 shadow-sm hover:shadow-xl hover:border-brand-purple/20 transition-shadow duration-300 flex flex-col justify-between h-full overflow-hidden group z-10"
     >
       {/* Top Gradient Accent */}
       <div className="absolute top-0 left-0 w-full h-[3px] bg-brand-gradient" />
@@ -96,7 +96,7 @@ export default function OurProcessSection() {
   return (
     <section
       id="process"
-      className="py-24 bg-transparent overflow-hidden"
+      className="py-14 sm:py-16 md:py-20 lg:py-24 bg-transparent overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -105,7 +105,7 @@ export default function OurProcessSection() {
           <span className="text-sm font-bold text-brand-purple tracking-widest uppercase">
             How We Work
           </span>
-          <h2 className="text-4xl md:text-5xl font-bold text-neutral-black mt-2 mb-4">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-neutral-black mt-2 mb-4">
             Our Process
           </h2>
           <p className="text-lg text-neutral-black/75 max-w-2xl mx-auto">
@@ -124,8 +124,11 @@ export default function OurProcessSection() {
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
           />
 
+          {/* Vertical Connector Line (Mobile only) */}
+          <div className="md:hidden absolute left-[52px] top-[40px] bottom-[40px] w-[2px] bg-gradient-to-b from-brand-red/20 via-brand-magenta/20 to-brand-purple/20 z-0 pointer-events-none" />
+
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 relative z-10 items-stretch"
+            className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-5 lg:gap-6 relative z-10 items-stretch"
             variants={shouldReduceMotion ? undefined : processContainer}
             initial={shouldReduceMotion ? undefined : 'hidden'}
             whileInView={shouldReduceMotion ? undefined : 'visible'}
@@ -146,3 +149,4 @@ export default function OurProcessSection() {
     </section>
   )
 }
+

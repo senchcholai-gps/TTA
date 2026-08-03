@@ -77,11 +77,11 @@ export default async function PortfolioItemPage({ params }: Props) {
   const ytId = isYT ? getYoutubeId(item.url) : ''
 
   return (
-    <div className="w-full bg-white relative min-h-screen flex flex-col justify-between">
+    <div className="w-full bg-transparent relative min-h-screen flex flex-col justify-between">
       <div>
         <Header />
 
-        <main className="py-12 bg-white">
+        <main className="py-12 bg-transparent">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             {/* Breadcrumb */}

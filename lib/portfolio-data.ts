@@ -64,7 +64,7 @@ export const portfolioItems: PortfolioItem[] = [
     category: 'Instagram Reels & Short-form Content',
     tag: 'Instagram Reel',
     description: 'Expert F-1 Student visa preparation advice and mock interview strategies.',
-    thumbnail: 'https://img.youtube.com/vi/A-KwfBHe1yg/maxresdefault.jpg',
+    thumbnail: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=600&auto=format&fit=crop',
     url: 'https://www.instagram.com/reel/DAQxi9LyH9G/',
     industry: 'Overseas Education',
     clientType: 'Consulting Services',
@@ -124,7 +124,7 @@ export const portfolioItems: PortfolioItem[] = [
     category: 'Instagram Reels & Short-form Content',
     tag: 'Instagram Reel',
     description: 'A comprehensive step-by-step planning guide for overseas education.',
-    thumbnail: 'https://img.youtube.com/vi/XIIrNHmyUQw/maxresdefault.jpg', // Fallback thumbnail
+    thumbnail: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=600&auto=format&fit=crop', // Replaced fallback thumbnail
     url: 'https://www.instagram.com/reel/DbI_YsXBmiN/',
     industry: 'Overseas Education',
     clientType: 'Consulting Services',
@@ -154,7 +154,7 @@ export const portfolioItems: PortfolioItem[] = [
     category: 'Instagram Reels & Short-form Content',
     tag: 'Instagram Reel',
     description: 'Key tips on how students can build a strong profile for top university applications.',
-    thumbnail: 'https://img.youtube.com/vi/xUlEBOj2QSU/maxresdefault.jpg', // Fallback thumbnail
+    thumbnail: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=600&auto=format&fit=crop', // Replaced fallback thumbnail
     url: 'https://www.instagram.com/reel/DafonuFJrjO/',
     industry: 'Overseas Education',
     clientType: 'Consulting Services',
@@ -183,8 +183,8 @@ export const portfolioItems: PortfolioItem[] = [
     title: 'Scholarship & Funding Opportunities',
     category: 'Instagram Reels & Short-form Content',
     tag: 'Instagram Reel',
-    description: 'Valuable advice on finding and securing scholarships for international study.',
-    thumbnail: 'https://img.youtube.com/vi/A-KwfBHe1yg/maxresdefault.jpg', // Fallback thumbnail
+    description: 'Breaking down common myths about university scholarships and funding for international students.',
+    thumbnail: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=600&auto=format&fit=crop',
     url: 'https://www.instagram.com/reel/Da77mUFpSo6/',
     industry: 'Overseas Education',
     clientType: 'Consulting Services',

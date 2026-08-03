@@ -32,7 +32,7 @@ export const statistics: Statistic[] = [
   },
   {
     title: 'Views Generated',
-    value: 2,
+    value: 20,
     suffix: 'M+',
     icon: 'TrendingUp',
     description: 'Organic + paid combined',
@@ -46,7 +46,7 @@ export const statistics: Statistic[] = [
   },
   {
     title: 'Campaigns Delivered',
-    value: 500,
+    value: 150,
     suffix: '+',
     icon: 'Rocket',
     description: 'On time & on budget',

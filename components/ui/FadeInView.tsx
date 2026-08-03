@@ -24,7 +24,6 @@
 
 import React from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
-import { fadeInUp } from '@/lib/motion'
 
 interface FadeInViewProps {
   children: React.ReactNode
@@ -60,9 +59,11 @@ export default function FadeInView({
         },
       }
     : {
-        ...fadeInUp,
+        hidden: { opacity: 0, y: yOffset, scale: 0.98 as number },
         visible: {
-          ...fadeInUp.visible,
+          opacity: 1 as number,
+          y: 0 as number,
+          scale: 1 as number,
           transition: {
             duration: 0.9,
             ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
