@@ -40,7 +40,7 @@ export default function InfiniteMarquee({ items, isLogoMode = false, speed = 40 
       }}
     >
       <div
-        className="flex w-max will-change-transform"
+        className="flex w-max will-change-transform [--marquee-gap-half:1.1rem] sm:[--marquee-gap-half:1.35rem] md:[--marquee-gap-half:1.6rem]"
         style={{
           animation: `hero-marquee-loop ${dynamicDuration}s linear infinite`,
         }}

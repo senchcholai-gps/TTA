@@ -92,8 +92,18 @@ export default function ClientLogo({
       ? `grayscale(100%) contrast(${itemContrast}) brightness(${itemBrightness})`
       : `contrast(${itemContrast}) brightness(${itemBrightness})`
 
+    // Calculate optical scale expansion/inset offset so visual edge-to-edge gap is mathematically identical
+    const numMaxWidth = parseFloat(itemMaxWidth) || 140
+    const scaleOffsetPx = Math.round(((itemScale - 1) * numMaxWidth) / 2)
+
     return (
-      <div className="h-14 sm:h-16 md:h-18 flex items-center justify-center flex-shrink-0 group select-none px-4 sm:px-6">
+      <div
+        className="flex-shrink-0 flex items-center justify-center h-14 sm:h-16 md:h-18 select-none group"
+        style={{
+          paddingLeft: `calc(var(--marquee-gap-half, 1.5rem) + ${scaleOffsetPx}px)`,
+          paddingRight: `calc(var(--marquee-gap-half, 1.5rem) + ${scaleOffsetPx}px)`,
+        }}
+      >
         <div
           className="flex items-center justify-center transition-all duration-300 ease-out"
           style={{

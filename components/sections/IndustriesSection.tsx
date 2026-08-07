@@ -123,7 +123,7 @@ const IndustryCard = memo(function IndustryCard({
             }
             className="group-hover:rotate-5 transition-transform duration-300 flex items-center justify-center"
           >
-            <Icon className="w-6 h-6 text-brand-purple group-hover:text-white transition-colors duration-300" />
+            <Icon className="w-6 h-6 text-neutral-black group-hover:text-white transition-colors duration-300" />
           </motion.div>
         </motion.div>
       </div>

@@ -22,7 +22,7 @@ import { useRef, useEffect, useState, memo } from 'react'
 import HeroBrowserShowcase from '@/components/ui/HeroBrowserShowcase'
 
 const DESIGN_W = 800
-const DESIGN_H = 450
+const DESIGN_H = 430
 
 const HeroShowcaseWrapper = memo(function HeroShowcaseWrapper() {
   const outerRef = useRef<HTMLDivElement>(null)
@@ -59,7 +59,7 @@ const HeroShowcaseWrapper = memo(function HeroShowcaseWrapper() {
           top: 0,
           left: 0,
           width: `${DESIGN_W}px`,
-          height: `${DESIGN_H}px`,
+          height: '450px',
           transformOrigin: 'top left',
           transform: `scale(${scale})`,
         }}

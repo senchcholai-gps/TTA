@@ -153,7 +153,6 @@ const TestimonialCard = memo(function TestimonialCard({
 })
 
 export default function TestimonialsSection() {
-  const [isHovered, setIsHovered] = useState(false)
   const shouldReduceMotion = useReducedMotion()
 
   return (
@@ -239,11 +238,7 @@ export default function TestimonialsSection() {
         </div>
 
         {/* Infinite Marquee Container */}
-        <div 
-          className="relative w-full overflow-hidden py-4 -mx-4 px-4 sm:mx-0 sm:px-0"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
+        <div className="relative w-full overflow-hidden py-4 -mx-4 px-4 sm:mx-0 sm:px-0">
           {/* Fade gradient masks for seamless entering/exiting */}
           <div className="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
@@ -251,10 +246,10 @@ export default function TestimonialsSection() {
           <motion.div
             className="flex gap-6"
             animate={{
-              x: shouldReduceMotion ? 0 : isHovered ? undefined : ["0%", "calc(-50% - 12px)"],
+              x: shouldReduceMotion ? 0 : ["0%", "calc(-50% - 12px)"],
             }}
             transition={{
-              duration: shouldReduceMotion ? 0 : 35,
+              duration: shouldReduceMotion ? 0 : 23.5,
               repeat: shouldReduceMotion ? 0 : Infinity,
               ease: 'linear',
               repeatType: 'loop',

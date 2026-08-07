@@ -122,7 +122,7 @@ const containerVariants: Variants = {
 }
 
 export default function FAQSection() {
-  const [openIdx, setOpenIdx] = useState<number | null>(0) // Open first by default
+  const [openIdx, setOpenIdx] = useState<number | null>(null)
   const shouldReduceMotion = useReducedMotion()
 
   const handleToggle = (idx: number) => {

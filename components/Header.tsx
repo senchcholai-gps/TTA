@@ -189,7 +189,7 @@ export default function Header() {
           <img
             src="/TTA_Logo_Landscape.png"
             alt="The Three Amigos"
-            className="h-12 md:h-14 w-auto object-contain"
+            className="h-[54px] md:h-[63px] w-auto object-contain"
           />
         </a>
 

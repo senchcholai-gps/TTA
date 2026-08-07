@@ -83,7 +83,7 @@ export default function CursorOrb() {
     <div
       aria-hidden="true"
       className="fixed top-0 left-0 pointer-events-none select-none hidden md:block"
-      style={{ zIndex: 2 }}
+      style={{ zIndex: -5 }}
     >
       {/* Primary large orb — fast trail */}
       <div

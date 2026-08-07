@@ -22,7 +22,7 @@ const CaseStudyCard = memo(function CaseStudyCard({
       className="bg-white rounded-[20px] border border-gray-150 overflow-hidden hover:shadow-xl hover:border-brand-magenta/30 transition-shadow duration-300 flex flex-col h-full relative group"
     >
       {/* Placeholder image area with shimmer */}
-      <div className="h-32 sm:h-48 bg-gradient-to-br from-brand-red/5 via-brand-magenta/5 to-brand-purple/5 relative overflow-hidden border-b border-gray-100 flex-shrink-0 flex items-center justify-center">
+      <div className="h-28 sm:h-48 bg-gradient-to-br from-brand-red/5 via-brand-magenta/5 to-brand-purple/5 relative overflow-hidden border-b border-gray-100 flex-shrink-0 flex items-center justify-center">
         <div className="absolute inset-0 bg-radial-[circle_at_center,rgba(139,0,149,0.06)_0%,transparent_70%] animate-pulse" />
         <div
           className="absolute -top-10 -left-10 w-36 h-36 rounded-full bg-brand-red/10 blur-2xl animate-pulse pointer-events-none"
@@ -40,8 +40,8 @@ const CaseStudyCard = memo(function CaseStudyCard({
       </div>
 
       {/* Copy and CTA block */}
-      <div className="p-4 sm:p-7 flex-grow flex flex-col justify-between">
-        <div className="space-y-4">
+      <div className="p-3.5 sm:p-7 flex-grow flex flex-col justify-between">
+        <div className="space-y-2.5 sm:space-y-4">
           <span className="text-[10px] font-extrabold uppercase tracking-widest text-brand-purple">
             Campaign Profile 0{index + 1}
           </span>
@@ -57,10 +57,10 @@ const CaseStudyCard = memo(function CaseStudyCard({
           </p>
         </div>
 
-        <div className="pt-6 mt-6 border-t border-gray-100 flex-shrink-0">
+        <div className="pt-3.5 mt-3.5 sm:pt-6 sm:mt-6 border-t border-gray-100 flex-shrink-0">
           <button
             disabled
-            className="w-full py-3 px-4 bg-slate-50 text-neutral-black/35 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 cursor-not-allowed select-none border border-gray-200/30"
+            className="w-full py-2.5 sm:py-3 px-3.5 sm:px-4 bg-slate-50 text-neutral-black/35 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 cursor-not-allowed select-none border border-gray-200/30"
           >
             <span>Available Soon</span>
           </button>

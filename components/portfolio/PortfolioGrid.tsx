@@ -46,11 +46,15 @@ export function ClientAvatar({ logo, name, className = "w-12 h-12 text-[11px]", 
 
 // 1. Instagram Reels Card (Vertical Card)
 export function InstagramReelCard({ item }: { item: PortfolioItem }) {
+  const [imgError, setImgError] = useState(false)
+  const reelId = getReelId(item.url)
+  const thumbUrl = item.thumbnail || (reelId ? `https://images.weserv.nl/?url=https://www.instagram.com/p/${reelId}/media/?size=l` : '')
+
   return (
     <motion.div
       whileHover={{ y: -10, scale: 1.015 }}
       transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-      className="bg-white border border-gray-150 rounded-3xl shadow-sm hover:shadow-2xl hover:border-brand-purple/35 transition-all duration-300 flex flex-col h-full overflow-hidden group relative"
+      className="bg-white border border-gray-150 rounded-3xl shadow-sm hover:shadow-2xl hover:border-brand-purple/35 transition-all duration-300 flex flex-col h-full overflow-hidden group relative z-10"
     >
       {/* Top Thin Animated Gradient Line */}
       <div className="absolute top-0 left-6 right-6 h-[3px] bg-gradient-to-r from-brand-red via-brand-magenta to-brand-purple rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
@@ -62,12 +66,25 @@ export function InstagramReelCard({ item }: { item: PortfolioItem }) {
         rel="noopener noreferrer" 
         className="w-full aspect-[9/16] max-h-[220px] xs:max-h-[280px] sm:max-h-[320px] md:max-h-[360px] bg-slate-50 relative overflow-hidden flex-shrink-0 border-b border-gray-100 block cursor-pointer group/thumb"
       >
-        <img
-          src={item.thumbnail}
-          alt={item.title}
-          className="w-full h-full object-cover scale-100 group-hover/thumb:scale-108 transition-transform duration-700 ease-out"
-          loading="lazy"
-        />
+        {!imgError && thumbUrl ? (
+          <img
+            src={thumbUrl}
+            alt={item.title}
+            onError={() => setImgError(true)}
+            className="w-full h-full object-cover scale-100 group-hover/thumb:scale-108 transition-transform duration-700 ease-out"
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-brand-purple/20 via-brand-magenta/15 to-brand-red/20 flex flex-col items-center justify-center p-4 text-center">
+            <div className="w-12 h-12 rounded-2xl bg-brand-gradient flex items-center justify-center text-white mb-2 shadow-md">
+              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+              </svg>
+            </div>
+            <span className="text-xs font-bold text-neutral-black/80">{item.title}</span>
+          </div>
+        )}
         {/* Dark Overlay */}
         <div className="absolute inset-0 bg-neutral-black/20 group-hover/thumb:bg-neutral-black/35 transition-colors duration-300" />
         

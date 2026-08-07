@@ -58,7 +58,7 @@ function CyclingStatus() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
           transition={{ duration: 0.5, ease: 'easeOut' as const }}
-          className="absolute text-[9.5px] font-extrabold text-brand-purple tracking-wide text-center whitespace-nowrap"
+          className="absolute text-[12.5px] font-extrabold text-brand-purple tracking-wide text-center whitespace-nowrap"
         >
           {workflowSteps[idx]}
         </motion.span>
@@ -76,56 +76,56 @@ interface ServiceCard {
 
 const services: ServiceCard[] = [
   {
-    title: 'AI Marketing\nSolutions',
-    items: ['AI Strategy', 'AI Automation', 'Lead Generation'],
+    title: 'AI Marketing',
+    items: ['AI Automation', 'Lead Generation'],
     icon: <Sparkles size={14} className="text-white" />,
     bgColor: 'bg-brand-purple',
   },
   {
     title: 'Social Media\nMarketing',
-    items: ['Instagram', 'Facebook', 'YouTube'],
+    items: ['Instagram', 'YouTube'],
     icon: <InstagramIcon />,
     bgColor: 'bg-pink-500',
   },
   {
     title: 'Performance\nMarketing',
-    items: ['Google Ads', 'Meta Ads', 'YouTube Ads'],
+    items: ['Google Ads', 'YouTube Ads'],
     icon: <Search size={14} className="text-white" />,
     bgColor: 'bg-brand-red',
   },
   {
     title: 'Content\nProduction',
-    items: ['Camera Shoots', 'Reels', 'Video Editing'],
+    items: ['Reels', 'Video Editing'],
     icon: <Video size={14} className="text-white" />,
     bgColor: 'bg-indigo-500',
   },
   {
     title: 'Email\nMarketing',
-    items: ['Email Campaigns', 'Automation', 'Lead Nurturing'],
+    items: ['Email Campaigns', 'Automation'],
     icon: <Mail size={14} className="text-white" />,
     bgColor: 'bg-emerald-500',
   },
   {
     title: 'Influencer\nMarketing',
-    items: ['Creator Outreach', 'UGC Content', 'Brand Collaborations'],
+    items: ['Creator Outreach', 'UGC Content'],
     icon: <Award size={14} className="text-white" />,
     bgColor: 'bg-blue-600',
   },
 ]
 
 // Card positions calculated for 450px container height
-// Vertical: 3 rows with 20px gaps, ~120px card height → rows at ~4%, ~31%, ~58%
-// Horizontal: 52px gap from center card edges
+// Vertical: 3 rows with perfectly uniform 30.5% deltas (3%, 33.5%, 64%)
+// Horizontal: 3% outer margins
 const positions = [
-  { left: '3%',   top: '4%'   },  // Top Left
-  { right: '3%',  top: '4%'   },  // Top Right
-  { left: '3%',   top: '34%'  },  // Middle Left
-  { right: '3%',  top: '34%'  },  // Middle Right
-  { left: '3%',   top: '64%'  },  // Bottom Left
-  { right: '3%',  top: '64%'  },  // Bottom Right
+  { left: '3%',   top: '3%'    },  // Top Left
+  { right: '3%',  top: '3%'    },  // Top Right
+  { left: '3%',   top: '33.5%' },  // Middle Left
+  { right: '3%',  top: '33.5%' },  // Middle Right
+  { left: '3%',   top: '64%'   },  // Bottom Left
+  { right: '3%',  top: '64%'   },  // Bottom Right
 ]
 
-// SVG connection paths (viewBox 800x450)
+// SVG connection paths (viewBox 800x450 - Original approved vector paths)
 const connectionPaths = [
   'M 200,65 Q 250,120 290,148',    // TL
   'M 600,65 Q 550,120 510,148',    // TR
@@ -245,7 +245,7 @@ export default function HeroBrowserShowcase() {
           {/* Logo & Spacing */}
           <div className="flex flex-col items-center mb-3.5">
             <img src="/TTA_Logo_Landscape.png" alt="The Three Amigos" className="h-9 object-contain" />
-            <span className="text-[7.5px] font-black text-brand-purple uppercase tracking-[0.22em] mt-2">
+            <span className="text-[10px] font-black text-brand-purple uppercase tracking-[0.22em] mt-2">
               AI Marketing Engine
             </span>
           </div>
@@ -269,9 +269,9 @@ export default function HeroBrowserShowcase() {
                 className="flex items-center gap-2"
               >
                 <div className="w-4 h-4 rounded-full bg-brand-purple/15 flex items-center justify-center flex-shrink-0">
-                  <Check size={9} strokeWidth={3} className="text-brand-purple" />
+                  <Check size={11} strokeWidth={3} className="text-brand-purple" />
                 </div>
-                <span className="text-[8.5px] font-bold text-neutral-black whitespace-nowrap">{txt}</span>
+                <span className="text-[11.8px] font-bold text-neutral-black whitespace-nowrap">{txt}</span>
               </motion.div>
             ))}
           </div>
@@ -319,15 +319,15 @@ export default function HeroBrowserShowcase() {
                   <div className={`w-7 h-7 rounded-lg ${svc.bgColor} flex items-center justify-center flex-shrink-0 shadow-sm`}>
                     {svc.icon}
                   </div>
-                  <span className="text-[9px] font-extrabold uppercase tracking-wide text-neutral-black leading-tight whitespace-pre-line">
+                  <span className="text-[12.5px] font-extrabold uppercase tracking-wide text-neutral-black leading-tight whitespace-pre-line">
                     {svc.title}
                   </span>
                 </div>
                 {/* Bullet items */}
                 <ul className="space-y-1 pl-1">
                   {svc.items.map((item, j) => (
-                    <li key={j} className="flex items-center gap-1.5 text-[8.5px] text-neutral-black/75 font-semibold whitespace-nowrap">
-                      <span className="w-1 h-1 rounded-full bg-neutral-black/30 flex-shrink-0" />
+                    <li key={j} className="flex items-center gap-1.5 text-[11.8px] text-neutral-black/80 font-semibold whitespace-nowrap">
+                      <span className="w-1.5 h-1.5 rounded-full bg-neutral-black/30 flex-shrink-0" />
                       {item}
                     </li>
                   ))}

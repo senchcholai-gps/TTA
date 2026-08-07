@@ -13,7 +13,7 @@ export default function BlogCard({ post }: BlogCardProps) {
   return (
     <motion.div
       whileHover={{ y: -6 }}
-      className="bg-white/80 backdrop-blur-md rounded-2xl border border-gray-150 overflow-hidden shadow-sm hover:shadow-md hover:border-brand-purple/20 transition-all duration-300 flex flex-col h-full group"
+      className="bg-white/80 backdrop-blur-md rounded-2xl border border-gray-150 overflow-hidden shadow-sm hover:shadow-md hover:border-brand-purple/20 transition-all duration-300 flex flex-col h-full group relative z-10"
     >
       {/* Cover Image */}
       <div className="h-48 overflow-hidden relative bg-slate-100 flex-shrink-0">

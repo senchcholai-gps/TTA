@@ -9,6 +9,9 @@ import FadeInView from '@/components/ui/FadeInView'
 
 const CUBIC_EASE = [0.22, 1, 0.36, 1] as const
 
+// Toggle to switch Service Card icon color evaluation theme between 'black' (#1A1A1A) and 'purple'
+export const SERVICE_ICON_THEME: 'black' | 'purple' = 'black'
+
 interface ServiceCardProps {
   category: ServiceCategory
   index: number
@@ -45,6 +48,8 @@ const ServiceCard = memo(function ServiceCard({
   const floatDuration = 6 + (index % 3) * 0.8
   const floatDelay = (index % 4) * 0.5
 
+  const iconColorClass = SERVICE_ICON_THEME === 'black' ? 'text-neutral-black' : 'text-brand-purple'
+
   return (
     <motion.div
       custom={index}
@@ -53,24 +58,21 @@ const ServiceCard = memo(function ServiceCard({
         shouldReduceMotion
           ? undefined
           : {
-              y: -10,
-              scale: 1.015,
-              transition: { duration: 0.25, ease: CUBIC_EASE },
+              y: -8,
+              scale: 1.01,
+              transition: { duration: 0.28, ease: CUBIC_EASE },
             }
       }
-      className={`group relative h-full p-3.5 sm:p-5 lg:p-6 bg-white/95 backdrop-blur-md rounded-2xl border ${
+      className={`group relative h-full p-3.5 sm:p-5 lg:p-6 bg-white/95 backdrop-blur-md rounded-2xl border overflow-hidden ${
         isExpanded
           ? 'border-brand-purple/60 shadow-xl'
           : 'border-gray-150 shadow-sm hover:shadow-xl hover:border-brand-purple/35'
       } transition-all duration-300 flex flex-col justify-between select-none`}
     >
-      {/* Light Sweep Effect */}
-      <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none overflow-hidden" />
-
       {/* Top Thin Animated Gradient Line */}
       <div className="absolute top-0 left-5 right-5 h-[2.5px] bg-gradient-to-r from-brand-red via-brand-magenta to-brand-purple rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-      <div className="flex flex-col flex-grow justify-between">
+      <div className="flex flex-col flex-grow justify-start">
         {/* 1. Icon Container */}
         <div className="mb-3 sm:mb-4">
           <motion.div
@@ -86,20 +88,20 @@ const ServiceCard = memo(function ServiceCard({
             }
             className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-brand-red/10 via-brand-magenta/10 to-brand-purple/10 group-hover:bg-brand-gradient rounded-xl shadow-xs group-hover:scale-105 group-hover:rotate-5 transition-all duration-300"
           >
-            <Icon className="w-4.5 h-4.5 sm:w-5 sm:h-5 text-brand-purple group-hover:text-white transition-colors duration-300" />
+            <Icon className={`w-4.5 h-4.5 sm:w-5 sm:h-5 ${iconColorClass} group-hover:text-white transition-colors duration-300`} />
           </motion.div>
         </div>
 
-        {/* 2. Fixed Title Area */}
-        <div className="min-h-0 sm:min-h-[2.85rem] flex items-start mb-1.5 sm:mb-2.5">
+        {/* 2. Fixed Title Area with uniform height on mobile, tablet & desktop */}
+        <div className="h-10 sm:h-11 lg:h-[3.25rem] flex items-start mb-1.5 sm:mb-2.5">
           <h3 className="text-xs sm:text-base lg:text-lg font-bold text-neutral-black leading-snug group-hover:text-brand-purple transition-colors duration-300">
             {category.title}
           </h3>
         </div>
 
-        {/* 3. Fixed Description Area */}
-        <div className="min-h-0 sm:min-h-[3.25rem] flex items-start mb-3 sm:mb-4">
-          <p className="hidden sm:block text-neutral-black/70 leading-relaxed text-xs sm:text-sm font-normal">
+        {/* 3. Fixed Description Area with uniform height */}
+        <div className="hidden sm:flex sm:h-[4.25rem] items-start mb-3 sm:mb-4">
+          <p className="text-neutral-black/70 leading-relaxed text-xs sm:text-sm font-normal">
             {category.description}
           </p>
         </div>
@@ -112,13 +114,13 @@ const ServiceCard = memo(function ServiceCard({
           aria-expanded={isExpanded}
           className="flex items-center justify-between w-full text-brand-purple font-semibold text-xs md:text-sm hover:text-brand-text-purple transition-colors duration-300 focus:outline-none cursor-pointer group/btn"
         >
-          <span className="flex items-center gap-1.5 group-hover/btn:translate-x-0.5 transition-transform duration-300">
-            <span>View All {category.services.length} Services</span>
-            <ArrowRight size={13} className="group-hover/btn:translate-x-1.5 transition-transform duration-300" />
+          <span className="inline-flex items-center gap-1 sm:gap-1.5 group-hover/btn:translate-x-0.5 transition-transform duration-300 whitespace-nowrap min-w-0">
+            <span className="whitespace-nowrap">View All {category.services.length} Services</span>
+            <ArrowRight size={13} className="group-hover/btn:translate-x-1.5 transition-transform duration-300 shrink-0" />
           </span>
           <ChevronDown
             size={15}
-            className="text-brand-purple/60 group-hover/btn:text-brand-purple transition-colors duration-300 -rotate-90"
+            className="text-brand-purple/60 group-hover/btn:text-brand-purple transition-colors duration-300 -rotate-90 shrink-0 ml-1"
           />
         </button>
       </div>
@@ -281,7 +283,7 @@ export default function ServicesSection() {
                 {/* Modal Header */}
                 <div className="flex-shrink-0 flex items-start justify-between p-6 sm:p-8 border-b border-gray-100 bg-white/50">
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-red/10 via-brand-magenta/10 to-brand-purple/10 flex items-center justify-center text-brand-purple flex-shrink-0">
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br from-brand-red/10 via-brand-magenta/10 to-brand-purple/10 flex items-center justify-center ${SERVICE_ICON_THEME === 'black' ? 'text-neutral-black' : 'text-brand-purple'} flex-shrink-0`}>
                       <activeCategory.icon size={24} />
                     </div>
                     <div>

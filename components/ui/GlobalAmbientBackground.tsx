@@ -313,10 +313,10 @@ export default function GlobalAmbientBackground() {
 
   return (
     <>
-      {/* ── Cursor orb — fixed view, follows viewport ─────────────────────────── */}
+      {/* ── Cursor orb — fixed view, follows viewport behind content ─────────────────────────── */}
       <div aria-hidden="true"
         className="fixed top-0 left-0 pointer-events-none select-none hidden md:block"
-        style={{ zIndex: 1 }}>
+        style={{ zIndex: -5 }}>
         <div ref={orbRef} style={{
           position: 'absolute', width: ORB, height: ORB, borderRadius: '50%',
           background: 'radial-gradient(circle at 45% 45%, rgba(214,0,60,0.18) 0%, rgba(139,0,149,0.16) 40%, rgba(61,0,214,0.12) 75%, transparent 100%)',

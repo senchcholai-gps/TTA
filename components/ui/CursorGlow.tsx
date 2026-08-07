@@ -62,7 +62,7 @@ export default function CursorGlow() {
     <div
       aria-hidden="true"
       className="fixed top-0 left-0 pointer-events-none select-none hidden md:block"
-      style={{ zIndex: 1, isolation: 'isolate' }}
+      style={{ zIndex: -5, isolation: 'isolate' }}
     >
       <div
         ref={glowRef}

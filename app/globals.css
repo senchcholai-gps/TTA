@@ -26,10 +26,25 @@
 }
 
 @layer base {
+  html {
+    font-size: 18px;
+  }
+  @media (max-width: 1024px) {
+    html {
+      font-size: 17.5px;
+    }
+  }
+  @media (max-width: 640px) {
+    html {
+      font-size: 17.5px;
+    }
+  }
   body {
     font-family: var(--font-inter);
     color: var(--color-neutral-black);
     background-color: var(--color-neutral-white);
+    font-size: 1rem;
+    line-height: 1.6;
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-poppins);
