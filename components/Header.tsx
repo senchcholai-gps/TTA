@@ -169,7 +169,7 @@ export default function Header() {
   return (
     <>
     <header
-      className="sticky top-0 z-50 border-b border-gray-100"
+      className="sticky top-0 z-50"
       style={{
         backgroundColor: scrolled ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.80)',
         backdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'blur(8px) saturate(140%)',

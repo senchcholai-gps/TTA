@@ -49,7 +49,7 @@ const HeroShowcaseWrapper = memo(function HeroShowcaseWrapper() {
        column height is always correct; no overflow visible here. */
     <div
       ref={outerRef}
-      className="w-full relative rounded-3xl border border-white/20 shadow-2xl bg-white/5 backdrop-blur-md overflow-hidden"
+      className="w-full relative rounded-3xl border-0 shadow-2xl bg-white/5 backdrop-blur-md overflow-hidden"
       style={{ aspectRatio: `${DESIGN_W} / ${DESIGN_H}` }}
     >
       {/* Inner canvas: always 800×450, scaled down from top-left to fill outer */}

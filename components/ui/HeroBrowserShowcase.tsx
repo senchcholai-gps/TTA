@@ -39,7 +39,6 @@ const workflowSteps = [
   '✓ Strategy Powered by AI',
   '✓ Content That Converts',
   '✓ Campaigns That Perform',
-  '✓ Analytics That Drive Growth',
   '✓ Automation That Scales',
 ]
 
@@ -258,7 +257,6 @@ export default function HeroBrowserShowcase() {
               'Strategy Powered by AI',
               'Content That Converts',
               'Campaigns That Perform',
-              'Analytics That Drive Growth',
               'Automation That Scales',
             ].map((txt, idx) => (
               <motion.div

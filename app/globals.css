@@ -62,7 +62,9 @@
 .text-brand-gradient {
   background: linear-gradient(135deg, #D6003C 0%, #8B0095 50%, #3D00D6 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 /* ─── Premium Motion Layer ──────────────────────────────────────────────────── */

@@ -303,7 +303,7 @@ export default function AboutSection() {
           {/* Metrics Grid — Modified only statistics row container */}
           <div
             ref={statsContainerRef}
-            className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-8 sm:gap-8 pt-10 mt-4 border-t border-gray-100 max-w-4xl mx-auto"
+            className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-8 sm:gap-8 pt-10 mt-4 max-w-4xl mx-auto"
           >
             {statisticsData.map((stat, idx) => (
               <StatItem

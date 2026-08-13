@@ -237,56 +237,53 @@ export default function TestimonialsSection() {
           </FadeInView>
         </div>
 
-        {/* Infinite Marquee Container */}
-        <div className="relative w-full overflow-hidden py-4 -mx-4 px-4 sm:mx-0 sm:px-0">
-          {/* Fade gradient masks for seamless entering/exiting */}
-          <div className="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-          <div className="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
-
-          <motion.div
-            className="flex gap-6"
-            animate={{
-              x: shouldReduceMotion ? 0 : ["0%", "calc(-50% - 12px)"],
-            }}
-            transition={{
-              duration: shouldReduceMotion ? 0 : 23.5,
-              repeat: shouldReduceMotion ? 0 : Infinity,
-              ease: 'linear',
-              repeatType: 'loop',
-            }}
-          >
-            {/* First Set */}
-            <div className="flex gap-6 flex-shrink-0">
-              {testimonialsData.map((testimonial) => (
-                <div
-                  key={`set1-${testimonial.id}`}
-                  className="w-[85vw] sm:w-[400px] lg:w-[450px] flex-shrink-0 h-auto"
-                >
-                  <TestimonialCard
-                    testimonial={testimonial}
-                    shouldReduceMotion={shouldReduceMotion}
-                  />
-                </div>
-              ))}
-            </div>
-            {/* Second Set */}
-            <div className="flex gap-6 flex-shrink-0">
-              {testimonialsData.map((testimonial) => (
-                <div
-                  key={`set2-${testimonial.id}`}
-                  className="w-[85vw] sm:w-[400px] lg:w-[450px] flex-shrink-0 h-auto"
-                >
-                  <TestimonialCard
-                    testimonial={testimonial}
-                    shouldReduceMotion={shouldReduceMotion}
-                  />
-                </div>
-              ))}
-            </div>
-          </motion.div>
-        </div>
-
       </div>
+
+      {/* Infinite Marquee — full width, outside the max-w container so it truly spans edge-to-edge */}
+      <div className="relative w-full overflow-hidden py-4">
+        <motion.div
+          className="flex gap-6"
+          animate={{
+            x: shouldReduceMotion ? 0 : ["0%", "calc(-50% - 12px)"],
+          }}
+          transition={{
+            duration: shouldReduceMotion ? 0 : 23.5,
+            repeat: shouldReduceMotion ? 0 : Infinity,
+            ease: 'linear',
+            repeatType: 'loop',
+          }}
+        >
+          {/* First Set */}
+          <div className="flex gap-6 flex-shrink-0">
+            {testimonialsData.map((testimonial) => (
+              <div
+                key={`set1-${testimonial.id}`}
+                className="w-[85vw] sm:w-[400px] lg:w-[450px] flex-shrink-0 h-auto"
+              >
+                <TestimonialCard
+                  testimonial={testimonial}
+                  shouldReduceMotion={shouldReduceMotion}
+                />
+              </div>
+            ))}
+          </div>
+          {/* Second Set */}
+          <div className="flex gap-6 flex-shrink-0">
+            {testimonialsData.map((testimonial) => (
+              <div
+                key={`set2-${testimonial.id}`}
+                className="w-[85vw] sm:w-[400px] lg:w-[450px] flex-shrink-0 h-auto"
+              >
+                <TestimonialCard
+                  testimonial={testimonial}
+                  shouldReduceMotion={shouldReduceMotion}
+                />
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+
     </section>
   )
 }

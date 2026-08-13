@@ -120,7 +120,7 @@ export const portfolioItems: PortfolioItem[] = [
   {
     id: 'r3',
     slug: 'study-abroad-planning-timeline',
-    title: 'Study Abroad Planning Timeline',
+    title: 'Study Abroad Planning Tips',
     category: 'Instagram Reels & Short-form Content',
     tag: 'Instagram Reel',
     description: 'A comprehensive step-by-step planning guide for overseas education.',
@@ -150,7 +150,7 @@ export const portfolioItems: PortfolioItem[] = [
   {
     id: 'r4',
     slug: 'academic-profile-building-strategies',
-    title: 'Academic Profile Building Strategies',
+    title: 'Career Growth & Professional Success',
     category: 'Instagram Reels & Short-form Content',
     tag: 'Instagram Reel',
     description: 'Key tips on how students can build a strong profile for top university applications.',
@@ -180,7 +180,7 @@ export const portfolioItems: PortfolioItem[] = [
   {
     id: 'r5',
     slug: 'scholarship-funding-opportunities',
-    title: 'Scholarship & Funding Opportunities',
+    title: 'Business Growth & Digital Strategy',
     category: 'Instagram Reels & Short-form Content',
     tag: 'Instagram Reel',
     description: 'Breaking down common myths about university scholarships and funding for international students.',

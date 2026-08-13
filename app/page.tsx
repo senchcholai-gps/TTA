@@ -173,9 +173,9 @@ export default function Home() {
             <FadeInView className="lg:col-span-5 text-left flex flex-col justify-center pt-6 lg:pt-0">
               
               {/* Title */}
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-neutral-black tracking-tight leading-tight" style={{ marginBottom: '20px' }}>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-neutral-black tracking-tight leading-[1.2]" style={{ marginBottom: '20px' }}>
                 Accelerate Your <br />
-                <span className="text-brand-gradient">Growth</span> Today
+                <span className="text-brand-gradient inline-block" style={{ paddingTop: '0.4em', marginTop: '-0.4em', paddingBottom: '0.1em' }}>Growth</span> Today
               </h1>
 
               {/* Paragraph */}
