@@ -94,10 +94,19 @@ export default function Header() {
 
   // Track scroll depth to enhance backdrop-blur + shadow on scroll
   useEffect(() => {
+    let ticking = false
     const handleScroll = () => {
-      setScrolled(window.scrollY > 24)
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const isPast = window.scrollY > 24
+          setScrolled((prev) => (prev !== isPast ? isPast : prev))
+          ticking = false
+        })
+        ticking = true
+      }
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll()
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 

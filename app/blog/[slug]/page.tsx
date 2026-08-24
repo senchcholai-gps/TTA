@@ -9,7 +9,10 @@ import ShareButtons from '@/components/blog/ShareButtons'
 import RelatedPosts from '@/components/blog/RelatedPosts'
 import NewsletterCTA from '@/components/blog/NewsletterCTA'
 import { blogPosts } from '@/lib/blog-data'
+import { getBlogPosts } from '@/lib/supabase/cms'
 import { Calendar, Clock, ChevronRight, ArrowLeft, ArrowRight, Lightbulb, AlertTriangle } from 'lucide-react'
+
+export const dynamic = 'force-dynamic'
 
 type Props = {
   params: Promise<{ slug: string }>
@@ -23,7 +26,8 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const post = blogPosts.find((p) => p.slug === slug)
+  const allPosts = await getBlogPosts()
+  const post = allPosts.find((p) => p.slug === slug)
   if (!post) return {}
 
   return {
@@ -62,12 +66,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params
-  const currentIndex = blogPosts.findIndex((p) => p.slug === slug)
+  const allPosts = await getBlogPosts()
+  const currentIndex = allPosts.findIndex((p) => p.slug === slug)
   if (currentIndex === -1) notFound()
 
-  const post = blogPosts[currentIndex]
-  const prevPost = currentIndex > 0 ? blogPosts[currentIndex - 1] : null
-  const nextPost = currentIndex < blogPosts.length - 1 ? blogPosts[currentIndex + 1] : null
+  const post = allPosts[currentIndex]
+  const prevPost = currentIndex > 0 ? allPosts[currentIndex - 1] : null
+  const nextPost = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null
 
   const pageUrl = post.canonicalUrl
 

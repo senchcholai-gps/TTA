@@ -1,16 +1,17 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { portfolioItems, portfolioCategories, PortfolioCategory, PortfolioItem } from '@/lib/portfolio-data'
+import { getPortfolioItems } from '@/lib/supabase/cms'
 
 function getReelId(url: string): string {
-  const match = url.match(/\/reel(?:s)?\/([A-Za-z0-9_-]+)/)
+  const match = url?.match(/\/reel(?:s)?\/([A-Za-z0-9_-]+)/)
   return match ? match[1] : ''
 }
 
 function getYoutubeId(url: string): string {
-  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([A-Za-z0-9_-]{11})/)
+  const match = url?.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([A-Za-z0-9_-]{11})/)
   return match ? match[1] : ''
 }
 
@@ -162,7 +163,7 @@ export function YouTubeShowcaseCard({ item }: { item: PortfolioItem }) {
         ) : (
           <div className="relative w-full h-full cursor-pointer group/thumb" onClick={() => setIsPlaying(true)}>
             <img
-              src={`https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`}
+              src={item.thumbnail || (ytId ? `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg` : '')}
               alt={item.title}
               className="w-full h-full object-cover group-hover/thumb:scale-103 transition-transform duration-500"
               loading="lazy"
@@ -252,7 +253,7 @@ export function YouTubeVerticalCard({ item }: { item: PortfolioItem }) {
         ) : (
           <div className="relative w-full h-full cursor-pointer group/thumb" onClick={() => setIsPlaying(true)}>
             <img
-              src={`https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`}
+              src={item.thumbnail || (ytId ? `https://img.youtube.com/vi/${ytId}/maxresdefault.jpg` : '')}
               alt={item.title}
               className="w-full h-full object-cover group-hover/thumb:scale-103 transition-transform duration-500"
               loading="lazy"
@@ -589,17 +590,26 @@ export function BrandManagementCard({ item }: { item: PortfolioItem }) {
 
 export default function PortfolioGrid() {
   const [activeCategory, setActiveCategory] = useState<string>('All')
+  const [items, setItems] = useState<PortfolioItem[]>(portfolioItems)
+
+  useEffect(() => {
+    getPortfolioItems().then((data) => {
+      if (data && data.length > 0) {
+        setItems(data)
+      }
+    })
+  }, [])
 
   // Split items by category for the 'All' tab layout
-  const reelsItems = useMemo(() => portfolioItems.filter(i => i.category === 'Instagram Reels & Short-form Content'), [])
-  const youtubeItems = useMemo(() => portfolioItems.filter(i => i.category === 'Long-form YouTube Videos'), [])
-  const managedPagesItems = useMemo(() => portfolioItems.filter(i => i.category === 'Pages We Manage'), [])
+  const reelsItems = useMemo(() => items.filter((i) => i.category === 'Instagram Reels & Short-form Content'), [items])
+  const youtubeItems = useMemo(() => items.filter((i) => i.category === 'Long-form YouTube Videos'), [items])
+  const managedPagesItems = useMemo(() => items.filter((i) => i.category === 'Pages We Manage'), [items])
 
   const filteredItems = useMemo(() => {
-    return portfolioItems.filter(
+    return items.filter(
       (item) => activeCategory === 'All' || item.category === activeCategory
     )
-  }, [activeCategory])
+  }, [items, activeCategory])
 
   return (
     <div className="space-y-16">

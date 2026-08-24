@@ -1,10 +1,11 @@
 'use client'
 
-import React, { useMemo } from 'react'
+import React, { useMemo, useState, useEffect } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { ArrowRight } from 'lucide-react'
-import { portfolioItems } from '@/lib/portfolio-data'
-import { InstagramReelCard } from '@/components/portfolio/PortfolioGrid'
+import { portfolioItems, PortfolioItem } from '@/lib/portfolio-data'
+import { getPortfolioItems } from '@/lib/supabase/cms'
+import { InstagramReelCard, YouTubeVerticalCard, BrandManagementCard } from '@/components/portfolio/PortfolioGrid'
 import FadeInView from '@/components/ui/FadeInView'
 
 const CUBIC_EASE = [0.22, 1, 0.36, 1] as const
@@ -35,12 +36,24 @@ const itemVariants = {
 export default function PortfolioSection() {
   const shouldReduceMotion = useReducedMotion()
 
-  // Select exactly 3 Instagram Reels for the homepage
-  const featuredItems = useMemo(() => {
-    return portfolioItems
-      .filter((i) => i.category === 'Instagram Reels & Short-form Content')
-      .slice(0, 3)
+  const [items, setItems] = useState<PortfolioItem[]>(portfolioItems)
+
+  useEffect(() => {
+    getPortfolioItems().then((data) => {
+      if (data && data.length > 0) {
+        setItems(data)
+      }
+    })
   }, [])
+
+  // Select YouTube videos for the homepage preview
+  const featuredItems = useMemo(() => {
+    const ytItems = items.filter(
+      (i) => i.category === 'Long-form YouTube Videos' || i.tag === 'YouTube Video' || i.url?.includes('youtu')
+    )
+    if (ytItems.length > 0) return ytItems.slice(0, 3)
+    return items.slice(0, 3)
+  }, [items])
 
   return (
     <section
@@ -105,7 +118,7 @@ export default function PortfolioSection() {
 
         {/* Portfolio cards — stagger on scroll */}
         <motion.div
-          className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5 lg:gap-8 items-stretch"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch"
           variants={shouldReduceMotion ? undefined : containerVariants}
           initial={shouldReduceMotion ? undefined : 'hidden'}
           whileInView={shouldReduceMotion ? undefined : 'visible'}
@@ -115,9 +128,15 @@ export default function PortfolioSection() {
             <motion.div
               key={item.id}
               variants={shouldReduceMotion ? undefined : itemVariants}
-              className="col-span-1 h-auto flex flex-col"
+              className="col-span-1 h-full flex flex-col"
             >
-              <InstagramReelCard item={item} />
+              {item.category === 'Long-form YouTube Videos' || item.tag === 'YouTube Video' || item.url?.includes('youtu') ? (
+                <YouTubeVerticalCard item={item} />
+              ) : item.category === 'Pages We Manage' || item.tag === 'Managed Page' ? (
+                <BrandManagementCard item={item} />
+              ) : (
+                <InstagramReelCard item={item} />
+              )}
             </motion.div>
           ))}
         </motion.div>

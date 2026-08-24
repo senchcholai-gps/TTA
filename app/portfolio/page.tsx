@@ -5,6 +5,8 @@ import PortfolioGrid from '@/components/portfolio/PortfolioGrid'
 import NewsletterCTA from '@/components/blog/NewsletterCTA'
 import { Sparkles } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Our Case Studies & Portfolio | The Three Amigos',
   description: 'Explore the high-ticket conversions, viral reach campaigns, and custom AI marketing pipelines we build for leading brands.',

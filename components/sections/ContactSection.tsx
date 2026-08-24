@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, FormEvent } from 'react'
+import React, { useState, useEffect, FormEvent } from 'react'
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
 import FadeInView from '@/components/ui/FadeInView'
 import {
@@ -13,9 +13,28 @@ import {
   AlertCircle,
   Loader2
 } from 'lucide-react'
+import { getSiteContentSection } from '@/lib/supabase/cms'
+
+const defaultContactCTA = {
+  heading: 'Free Marketing Audit',
+  subheading: 'Fill out the form below to receive a comprehensive analysis of your growth opportunities.',
+  contact_email: 'thethreeamigosdm@gmail.com',
+  contact_phone: '+91 85264 62969',
+  whatsapp_number: '+918526462969',
+  office_address: 'Chennai, India',
+}
 
 export default function ContactSection() {
   const shouldReduceMotion = useReducedMotion()
+
+  // CMS-driven contact info
+  const [contactCTA, setContactCTA] = useState(defaultContactCTA)
+
+  useEffect(() => {
+    getSiteContentSection('contact_cta', defaultContactCTA).then((data) => {
+      if (data) setContactCTA(data as typeof defaultContactCTA)
+    })
+  }, [])
 
   // Audit Form State
   const [formData, setFormData] = useState({
@@ -181,10 +200,10 @@ export default function ContactSection() {
             Get In Touch
           </span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-neutral-black mt-2 mb-4">
-            Free Marketing Audit
+            {contactCTA.heading}
           </h2>
           <p className="text-lg text-neutral-black/75 max-w-2xl mx-auto">
-            Fill out the form below to receive a comprehensive analysis of your growth opportunities.
+            {contactCTA.subheading}
           </p>
         </FadeInView>
 
@@ -205,8 +224,8 @@ export default function ContactSection() {
                   </div>
                   <div>
                     <span className="block text-[10px] uppercase font-bold text-neutral-black/45 tracking-wider">Email</span>
-                    <a href="mailto:thethreeamigosdm@gmail.com" className="text-sm font-semibold text-neutral-black hover:text-brand-purple transition-colors">
-                      thethreeamigosdm@gmail.com
+                    <a href={`mailto:${contactCTA.contact_email}`} className="text-sm font-semibold text-neutral-black hover:text-brand-purple transition-colors">
+                      {contactCTA.contact_email}
                     </a>
                   </div>
                 </div>
@@ -217,8 +236,8 @@ export default function ContactSection() {
                   </div>
                   <div>
                     <span className="block text-[10px] uppercase font-bold text-neutral-black/45 tracking-wider">Phone</span>
-                    <a href="https://wa.me/918526462969" target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-neutral-black hover:text-brand-purple transition-colors">
-                      +91 85264 62969
+                    <a href={`https://wa.me/${contactCTA.whatsapp_number.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-neutral-black hover:text-brand-purple transition-colors">
+                      {contactCTA.contact_phone}
                     </a>
                   </div>
                 </div>
@@ -230,7 +249,7 @@ export default function ContactSection() {
                   <div>
                     <span className="block text-[10px] uppercase font-bold text-neutral-black/45 tracking-wider">Office</span>
                     <span className="text-sm font-semibold text-neutral-black">
-                      Chennai, India
+                      {contactCTA.office_address}
                     </span>
                   </div>
                 </div>

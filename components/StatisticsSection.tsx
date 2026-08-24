@@ -16,6 +16,7 @@ import {
   LucideIcon,
 } from 'lucide-react'
 import { statistics, Statistic } from '@/lib/statistics'
+import { getMetrics, AdminMetricItem } from '@/lib/supabase/cms'
 
 /* ─────────────────────────────────────────────
    Icon registry — add new icons here as needed
@@ -218,6 +219,23 @@ export const StatisticsSection = memo(function StatisticsSection() {
   // Trigger once when the section enters the viewport
   const isInView = useInView(sectionRef, { once: true, margin: '-80px 0px' })
 
+  const [stats, setStats] = useState<Statistic[]>(statistics)
+
+  useEffect(() => {
+    getMetrics().then((data) => {
+      if (data && data.length > 0) {
+        const mapped: Statistic[] = data.map((m) => ({
+          title: m.title,
+          value: m.target_value,
+          suffix: m.suffix || '+',
+          icon: 'Users',
+          description: m.description || undefined,
+        }))
+        setStats(mapped)
+      }
+    })
+  }, [])
+
   const headingTransition: Transition = shouldReduceMotion
     ? { duration: 0 }
     : { duration: 0.9, ease: [0.16, 1, 0.3, 1] as [number,number,number,number] }
@@ -263,7 +281,7 @@ export const StatisticsSection = memo(function StatisticsSection() {
           role="list"
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
         >
-          {statistics.map((stat, index) => (
+          {stats.map((stat, index) => (
             <div key={stat.title} role="listitem">
               <StatCard
                 stat={stat}

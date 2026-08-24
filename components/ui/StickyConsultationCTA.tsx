@@ -17,12 +17,15 @@ export default function StickyConsultationCTA() {
       setDismissed(true)
     }
 
-    // 1. Scroll listener for initial depth threshold (> 600px)
+    // 1. RAF-throttled scroll listener for initial depth threshold (> 600px)
+    let ticking = false
     const handleScroll = () => {
-      if (window.scrollY > 600) {
-        setScrolledPastThreshold(true)
-      } else {
-        setScrolledPastThreshold(false)
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          setScrolledPastThreshold(window.scrollY > 600)
+          ticking = false
+        })
+        ticking = true
       }
     }
 

@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom'
 import { motion, AnimatePresence, useReducedMotion, Variants } from 'framer-motion'
 import { ChevronDown, CheckCircle2, ArrowRight, X } from 'lucide-react'
 import { serviceCategories, ServiceCategory } from '@/lib/services-data'
+import { getServices } from '@/lib/supabase/cms'
 import FadeInView from '@/components/ui/FadeInView'
 
 const CUBIC_EASE = [0.22, 1, 0.36, 1] as const
@@ -130,14 +131,20 @@ const ServiceCard = memo(function ServiceCard({
 
 export default function ServicesSection() {
   const [expandedService, setExpandedService] = useState<string | null>(null)
+  const [categories, setCategories] = useState<ServiceCategory[]>(serviceCategories)
   const [mounted, setMounted] = useState(false)
   const shouldReduceMotion = useReducedMotion()
 
   useEffect(() => {
     setMounted(true)
+    getServices().then((data) => {
+      if (data && data.length > 0) {
+        setCategories(data)
+      }
+    })
   }, [])
 
-  const activeCategory = serviceCategories.find(c => c.id === expandedService)
+  const activeCategory = categories.find(c => c.id === expandedService)
 
   // Handle scroll lock and Escape key for Modal
   useEffect(() => {
@@ -241,7 +248,7 @@ export default function ServicesSection() {
 
         {/* Grid Container */}
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5 lg:gap-8 items-stretch overflow-visible">
-          {serviceCategories.map((category, index) => (
+          {categories.map((category, index) => (
             <ServiceCard
               key={category.id}
               category={category}

@@ -141,18 +141,14 @@ const IndustryCard = memo(function IndustryCard({
 export default function IndustriesSection() {
   const shouldReduceMotion = useReducedMotion()
   const sectionRef = useRef<HTMLDivElement>(null)
-
-  // Mouse Parallax & Spotlight state
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0, normX: 0, normY: 0 })
+  const spotlightRef = useRef<HTMLDivElement>(null)
 
   const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (!sectionRef.current) return
+    if (!sectionRef.current || !spotlightRef.current) return
     const rect = sectionRef.current.getBoundingClientRect()
     const x = e.clientX - rect.left
     const y = e.clientY - rect.top
-    const normX = (x / rect.width - 0.5) * 2
-    const normY = (y / rect.height - 0.5) * 2
-    setMousePos({ x, y, normX, normY })
+    spotlightRef.current.style.transform = `translate3d(${x - 140}px, ${y - 140}px, 0)`
   }, [])
 
   return (
@@ -163,26 +159,25 @@ export default function IndustriesSection() {
       onMouseMove={handleMouseMove}
       className="relative py-14 sm:py-16 md:py-20 lg:py-24 bg-transparent overflow-hidden"
     >
-      {/* Ambient Drifting Background Glows (Purple 3% blur 240px & Pink 2% blur 300px) */}
+      {/* Ambient Drifting Background Glows */}
       {!shouldReduceMotion && (
         <>
           <motion.div
             animate={{ x: [-30, 30, -30], y: [-15, 15, -15], opacity: [0.025, 0.035, 0.025] }}
             transition={{ duration: 28, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute top-1/4 -left-20 w-[550px] h-[550px] bg-brand-purple rounded-full blur-[240px] pointer-events-none -z-10"
+            className="absolute top-1/4 -left-20 w-[550px] h-[550px] bg-brand-purple rounded-full blur-[140px] pointer-events-none -z-10"
           />
           <motion.div
             animate={{ x: [30, -30, 30], y: [15, -15, 15], opacity: [0.015, 0.025, 0.015] }}
             transition={{ duration: 34, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute bottom-1/4 -right-20 w-[600px] h-[600px] bg-brand-magenta rounded-full blur-[300px] pointer-events-none -z-10"
+            className="absolute bottom-1/4 -right-20 w-[600px] h-[600px] bg-brand-magenta rounded-full blur-[160px] pointer-events-none -z-10"
           />
 
-          {/* Cursor Spotlight (w-280px blur-120px 4% opacity) */}
+          {/* Cursor Spotlight (Desktop only, 0% React re-render overhead) */}
           <div
-            className="absolute pointer-events-none w-[280px] h-[280px] rounded-full bg-brand-purple/4 blur-[120px] transition-transform duration-200 ease-out -z-10"
-            style={{
-              transform: `translate3d(${mousePos.x - 140}px, ${mousePos.y - 140}px, 0)`
-            }}
+            ref={spotlightRef}
+            className="absolute pointer-events-none w-[280px] h-[280px] rounded-full bg-brand-purple/4 blur-[80px] transition-transform duration-150 ease-out -z-10 hidden md:block"
+            style={{ transform: 'translate3d(-1000px, -1000px, 0)' }}
           />
         </>
       )}

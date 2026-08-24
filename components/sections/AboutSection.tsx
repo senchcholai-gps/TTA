@@ -3,6 +3,7 @@
 import React, { useRef, memo, useState, useEffect, useCallback } from 'react'
 import { motion, useInView, useReducedMotion, Variants, useMotionValue, useTransform, animate } from 'framer-motion'
 import { Users, TrendingUp, BarChart3, Rocket } from 'lucide-react'
+import { getSiteContentSection, defaultAboutContent, AdminAboutContent, getMetrics, AdminMetricItem } from '@/lib/supabase/cms'
 
 const CUBIC_EASE = [0.22, 1, 0.36, 1] as const
 
@@ -151,6 +152,33 @@ const StatItem = memo(function StatItem({
 
 export default function AboutSection() {
   const containerRef = useRef<HTMLDivElement>(null)
+  const [aboutContent, setAboutContent] = useState<AdminAboutContent>(defaultAboutContent)
+  const [stats, setStats] = useState<Statistic[]>(statisticsData)
+
+  useEffect(() => {
+    getSiteContentSection<AdminAboutContent>('about', defaultAboutContent).then((data) => {
+      if (data) setAboutContent(data)
+    })
+
+    getMetrics().then((data) => {
+      if (data && data.length > 0) {
+        const mapped: Statistic[] = data.map((m) => {
+          // Find matching static item for icon and duration
+          const match = statisticsData.find(s => s.title === m.title) || statisticsData[0]
+          return {
+            title: m.title,
+            targetValue: m.target_value,
+            startValue: m.start_value,
+            suffix: m.suffix || '+',
+            icon: match.icon,
+            description: m.description || undefined,
+            duration: match.duration,
+          }
+        })
+        setStats(mapped)
+      }
+    })
+  }, [])
   
   // Section text trigger (remains fully unchanged)
   const isInView = useInView(containerRef, { once: true, margin: '-20%' })
@@ -281,7 +309,7 @@ export default function AboutSection() {
             variants={shouldReduceMotion ? undefined : itemVariants}
             className="text-xs font-bold text-brand-purple tracking-widest uppercase"
           >
-            About Us
+            {aboutContent.tagline || 'About Us'}
           </motion.div>
 
           {/* Heading */}
@@ -289,7 +317,8 @@ export default function AboutSection() {
             variants={shouldReduceMotion ? undefined : itemVariants}
             className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-neutral-black leading-tight max-w-3xl mx-auto"
           >
-            We Build High-Converting <span className="text-brand-gradient">Growth Systems</span>
+            {aboutContent.heading || 'We Build High-Converting'}{' '}
+            <span className="text-brand-gradient">{aboutContent.heading_accent || 'Growth Systems'}</span>
           </motion.h2>
 
           {/* Core Content Statement */}
@@ -297,7 +326,7 @@ export default function AboutSection() {
             variants={shouldReduceMotion ? undefined : itemVariants}
             className="text-base md:text-lg xl:text-xl text-neutral-black/85 leading-relaxed font-medium max-w-4xl mx-auto"
           >
-            We help brands grow faster with AI-powered marketing, strategic social media management, in-house video production, influencer collaborations, and performance-driven digital campaigns. From AI content creation to camera production and editing — we build marketing systems that generate awareness, leads, and measurable business growth.
+            {aboutContent.description}
           </motion.p>
 
           {/* Metrics Grid — Modified only statistics row container */}
@@ -305,7 +334,7 @@ export default function AboutSection() {
             ref={statsContainerRef}
             className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-8 sm:gap-8 pt-10 mt-4 max-w-4xl mx-auto"
           >
-            {statisticsData.map((stat, idx) => (
+            {stats.map((stat, idx) => (
               <StatItem
                 key={idx}
                 stat={stat}

@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useState, useRef, memo } from 'react'
+import React, { useState, useRef, memo, useEffect } from 'react'
 import { motion, useReducedMotion, Variants } from 'framer-motion'
-import { Quote, ChevronLeft, ChevronRight, Star, User } from 'lucide-react'
+import { Quote, Star, User } from 'lucide-react'
 import FadeInView from '@/components/ui/FadeInView'
+import { getTestimonials, Testimonial } from '@/lib/supabase/cms'
 
 const cubicEaseOut = [0.33, 1, 0.68, 1] as const
 
@@ -44,7 +45,6 @@ const testimonialsData: TestimonialData[] = [
     name: 'Mathangee Thiagarajan',
     company: 'Her Finance Stories',
     text: "Working with The Three Amigos brought structure and consistency to my content that I couldn't manage on my own. They understand finance content and know how to make it feel personal, not preachy.",
-    // No fabricated AI profile photo — uses neutral default placeholder
     rating: 5,
     tag: 'Verified Client'
   },
@@ -79,6 +79,9 @@ const TestimonialCard = memo(function TestimonialCard({
   testimonial: TestimonialData
   shouldReduceMotion: boolean | null
 }) {
+  const [imgError, setImgError] = useState(false)
+  const hasAvatar = Boolean(testimonial.logo && !imgError)
+
   return (
     <motion.div
       variants={shouldReduceMotion ? undefined : cardVariants}
@@ -123,13 +126,14 @@ const TestimonialCard = memo(function TestimonialCard({
       {/* Author Info — Production Avatar Rules */}
       <div className="flex items-center gap-4 mt-auto pt-6 border-t border-gray-100">
         <div className="w-11 h-11 rounded-full overflow-hidden border border-gray-200/80 bg-white shadow-xs flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
-          {testimonial.logo ? (
+          {hasAvatar ? (
             <img
               src={testimonial.logo}
               alt={testimonial.name}
               className={`w-full h-full ${
-                testimonial.logoFit === 'contain' ? 'object-contain p-1.5' : 'object-cover'
+                testimonial.logoFit === 'cover' ? 'object-cover' : 'object-contain p-1.5'
               } object-center`}
+              onError={() => setImgError(true)}
               loading="lazy"
             />
           ) : (
@@ -154,6 +158,35 @@ const TestimonialCard = memo(function TestimonialCard({
 
 export default function TestimonialsSection() {
   const shouldReduceMotion = useReducedMotion()
+  const [items, setItems] = useState<TestimonialData[]>(testimonialsData)
+
+  useEffect(() => {
+    getTestimonials().then((data) => {
+      if (data && data.length > 0) {
+        const mapped: TestimonialData[] = data.map((t, idx) => {
+          const avatar = t.avatar_url || (t as any).avatar || undefined
+          const isPhoto = Boolean(
+            avatar &&
+              (avatar.includes('avatar') ||
+                avatar.includes('user') ||
+                avatar.includes('profile') ||
+                avatar.includes('headshot'))
+          )
+          return {
+            id: idx + 1,
+            name: t.name,
+            company: t.company || t.role || 'Client Partner',
+            text: t.text,
+            logo: avatar,
+            logoFit: isPhoto ? 'cover' : 'contain',
+            rating: t.rating || 5,
+            tag: 'Verified Client',
+          }
+        })
+        setItems(mapped)
+      }
+    })
+  }, [])
 
   return (
     <section
@@ -183,17 +216,15 @@ export default function TestimonialsSection() {
             aria-hidden="true"
             animate={{ y: [0, 18, 0], opacity: [0.025, 0.045, 0.025] }}
             transition={{ duration: 19, repeat: Infinity, ease: 'easeInOut', delay: 5 }}
-            className="absolute bottom-0 right-[5%] w-[280px] h-[280px] bg-gradient-to-tl from-brand-purple to-transparent rounded-full blur-[80px] pointer-events-none -z-10"
+            className="absolute bottom-0 right-[5%] w-[350px] h-[350px] bg-gradient-to-tl from-brand-purple to-transparent rounded-full blur-[90px] pointer-events-none -z-10"
           />
 
-          {/* Floating particle dots */}
+          {/* Drifting particle dots */}
           {[
-            { x: '15%', y: '20%', dur: 11, delay: 0, size: 4 },
-            { x: '75%', y: '15%', dur: 14, delay: 1.5, size: 3 },
-            { x: '88%', y: '55%', dur: 9, delay: 3, size: 5 },
-            { x: '10%', y: '70%', dur: 13, delay: 2, size: 3 },
-            { x: '50%', y: '80%', dur: 16, delay: 0.5, size: 4 },
-            { x: '35%', y: '10%', dur: 12, delay: 4, size: 3 },
+            { x: '15%', y: '20%', size: 4, dur: 14, delay: 0 },
+            { x: '80%', y: '15%', size: 3, dur: 18, delay: 1 },
+            { x: '70%', y: '75%', size: 5, dur: 16, delay: 3 },
+            { x: '25%', y: '80%', size: 3, dur: 21, delay: 2 },
           ].map((p, i) => (
             <motion.div
               key={i}
@@ -255,7 +286,7 @@ export default function TestimonialsSection() {
         >
           {/* First Set */}
           <div className="flex gap-6 flex-shrink-0">
-            {testimonialsData.map((testimonial) => (
+            {items.map((testimonial) => (
               <div
                 key={`set1-${testimonial.id}`}
                 className="w-[85vw] sm:w-[400px] lg:w-[450px] flex-shrink-0 h-auto"
@@ -269,7 +300,7 @@ export default function TestimonialsSection() {
           </div>
           {/* Second Set */}
           <div className="flex gap-6 flex-shrink-0">
-            {testimonialsData.map((testimonial) => (
+            {items.map((testimonial) => (
               <div
                 key={`set2-${testimonial.id}`}
                 className="w-[85vw] sm:w-[400px] lg:w-[450px] flex-shrink-0 h-auto"

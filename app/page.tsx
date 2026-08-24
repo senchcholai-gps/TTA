@@ -1,24 +1,29 @@
 'use client'
 
+import React, { useState, useEffect } from 'react'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { ArrowRight } from 'lucide-react'
 import InfiniteMarquee, { MarqueeItem } from '@/components/InfiniteMarquee'
 import { motion, useReducedMotion } from 'framer-motion'
 import FadeInView from '@/components/ui/FadeInView'
+import dynamic from 'next/dynamic'
+import { getClientLogos } from '@/lib/supabase/cms'
 
-// Section Imports
-import ServicesSection from '@/components/sections/ServicesSection'
-import IndustriesSection from '@/components/sections/IndustriesSection'
-import TestimonialsSection from '@/components/sections/TestimonialsSection'
-import OurProcessSection from '@/components/sections/OurProcessSection'
-import PortfolioSection from '@/components/sections/PortfolioSection'
-import CaseStudiesSection from '@/components/sections/CaseStudiesSection'
+// Critical Above-The-Fold & Conversion Sections
 import AboutSection from '@/components/sections/AboutSection'
-import PricingSection from '@/components/sections/PricingSection'
-import FAQSection from '@/components/sections/FAQSection'
+import ServicesSection from '@/components/sections/ServicesSection'
+import PortfolioSection from '@/components/sections/PortfolioSection'
+import TestimonialsSection from '@/components/sections/TestimonialsSection'
 import ContactSection from '@/components/sections/ContactSection'
-import BlogSection from '@/components/sections/BlogSection'
+
+// Dynamically Chunked Below-The-Fold Sections (SSR Enabled for 100% SEO)
+const IndustriesSection = dynamic(() => import('@/components/sections/IndustriesSection'))
+const OurProcessSection = dynamic(() => import('@/components/sections/OurProcessSection'))
+const CaseStudiesSection = dynamic(() => import('@/components/sections/CaseStudiesSection'))
+const PricingSection = dynamic(() => import('@/components/sections/PricingSection'))
+const FAQSection = dynamic(() => import('@/components/sections/FAQSection'))
+const BlogSection = dynamic(() => import('@/components/sections/BlogSection'))
 
 // UI Imports
 import FloatingWhatsApp from '@/components/ui/FloatingWhatsApp'
@@ -26,111 +31,139 @@ import StickyConsultationCTA from '@/components/ui/StickyConsultationCTA'
 import HeroShowcaseWrapper from '@/components/ui/HeroShowcaseWrapper'
 
 
+// Static fallback logos (used until Supabase data loads, and as the seed source)
+const staticClientLogos: MarqueeItem[] = [
+  {
+    name: 'UNICEF',
+    logo: '/logos/optimized/unicef.png',
+    maxHeight: '28px',
+    maxWidth: '130px',
+    scale: 0.82,
+    opacity: 0.95,
+    contrast: 1.0,
+    brightness: 1.0
+  },
+  {
+    name: 'Maven Consulting',
+    logo: '/logos/optimized/maven-consulting.png',
+    maxHeight: '40px',
+    maxWidth: '175px',
+    scale: 1.25,
+    opacity: 0.98,
+    contrast: 1.15,
+    brightness: 0.95
+  },
+  {
+    name: 'Jashmi Investment',
+    logo: '/logos/optimized/jashmi-investment.png',
+    maxHeight: '46px',
+    maxWidth: '130px',
+    scale: 1.30,
+    opacity: 0.98,
+    contrast: 1.20,
+    brightness: 0.90
+  },
+  {
+    name: 'Maven Education',
+    logo: '/logos/optimized/maven-education.png',
+    maxHeight: '40px',
+    maxWidth: '145px',
+    scale: 1.15,
+    opacity: 0.98,
+    contrast: 1.15,
+    brightness: 0.95
+  },
+  {
+    name: 'The Book Show',
+    logo: '/logos/optimized/the-book-show.png',
+    maxHeight: '46px',
+    maxWidth: '90px',
+    scale: 1.20,
+    opacity: 0.98,
+    contrast: 1.0,
+    brightness: 1.0
+  },
+  {
+    name: 'Why Tap',
+    logo: '/logos/optimized/why-tap.png',
+    maxHeight: '36px',
+    maxWidth: '135px',
+    scale: 1.05,
+    opacity: 0.95,
+    contrast: 1.0,
+    brightness: 1.0
+  },
+  {
+    name: 'Namma Yatri',
+    logo: '/logos/optimized/namma-yatri.png',
+    maxHeight: '36px',
+    maxWidth: '140px',
+    scale: 1.05,
+    opacity: 0.95,
+    contrast: 1.0,
+    brightness: 1.0
+  },
+  {
+    name: 'Ather',
+    logo: '/logos/optimized/ather.png',
+    maxHeight: '30px',
+    maxWidth: '135px',
+    scale: 0.92,
+    opacity: 0.95,
+    contrast: 1.0,
+    brightness: 1.0
+  },
+  {
+    name: 'Yellow Owl',
+    logo: '/logos/optimized/yellow-owl.png',
+    maxHeight: '30px',
+    maxWidth: '145px',
+    scale: 0.92,
+    opacity: 0.95,
+    contrast: 1.0,
+    brightness: 1.0
+  },
+  {
+    name: "Aara's Chicken",
+    logo: '/logos/optimized/aaras-chicken.png',
+    maxHeight: '44px',
+    maxWidth: '125px',
+    scale: 1.15,
+    opacity: 0.98,
+    contrast: 1.15,
+    brightness: 0.95
+  }
+]
+
 export default function Home() {
   const shouldReduceMotion = useReducedMotion()
 
-  const clientLogos: MarqueeItem[] = [
-    {
-      name: 'UNICEF',
-      logo: '/logos/optimized/unicef.png',
-      maxHeight: '28px',
-      maxWidth: '130px',
-      scale: 0.82,
-      opacity: 0.95,
-      contrast: 1.0,
-      brightness: 1.0
-    },
-    {
-      name: 'Maven Consulting',
-      logo: '/logos/optimized/maven-consulting.png',
-      maxHeight: '40px',
-      maxWidth: '175px',
-      scale: 1.25,
-      opacity: 0.98,
-      contrast: 1.15,
-      brightness: 0.95
-    },
-    {
-      name: 'Jashmi Investment',
-      logo: '/logos/optimized/jashmi-investment.png',
-      maxHeight: '46px',
-      maxWidth: '130px',
-      scale: 1.30,
-      opacity: 0.98,
-      contrast: 1.20,
-      brightness: 0.90
-    },
-    {
-      name: 'Maven Education',
-      logo: '/logos/optimized/maven-education.png',
-      maxHeight: '40px',
-      maxWidth: '145px',
-      scale: 1.15,
-      opacity: 0.98,
-      contrast: 1.15,
-      brightness: 0.95
-    },
-    {
-      name: 'The Book Show',
-      logo: '/logos/optimized/the-book-show.png',
-      maxHeight: '46px',
-      maxWidth: '90px',
-      scale: 1.20,
-      opacity: 0.98,
-      contrast: 1.0,
-      brightness: 1.0
-    },
-    {
-      name: 'Why Tap',
-      logo: '/logos/optimized/why-tap.png',
-      maxHeight: '36px',
-      maxWidth: '135px',
-      scale: 1.05,
-      opacity: 0.95,
-      contrast: 1.0,
-      brightness: 1.0
-    },
-    {
-      name: 'Namma Yatri',
-      logo: '/logos/optimized/namma-yatri.png',
-      maxHeight: '36px',
-      maxWidth: '140px',
-      scale: 1.05,
-      opacity: 0.95,
-      contrast: 1.0,
-      brightness: 1.0
-    },
-    {
-      name: 'Ather',
-      logo: '/logos/optimized/ather.png',
-      maxHeight: '30px',
-      maxWidth: '135px',
-      scale: 0.92,
-      opacity: 0.95,
-      contrast: 1.0,
-      brightness: 1.0
-    },
-    {
-      name: 'Yellow Owl',
-      logo: '/logos/optimized/yellow-owl.png',
-      maxHeight: '30px',
-      maxWidth: '145px',
-      scale: 0.92,
-      opacity: 0.95,
-      contrast: 1.0,
-      brightness: 1.0
-    },
-    {
-      name: "Aara's Chicken",
-      logo: '/logos/optimized/aaras-chicken.png',
-      maxHeight: '44px',
-      maxWidth: '125px',
-      scale: 1.15,
-      opacity: 0.98,
-      contrast: 1.15,
-      brightness: 0.95
-    }
-  ]
+  // Client logos — loaded from Supabase, falls back to staticClientLogos if DB is empty
+  const [clientLogos, setClientLogos] = useState<MarqueeItem[]>(staticClientLogos)
+
+  useEffect(() => {
+    getClientLogos().then((data) => {
+      if (data && data.length > 0) {
+        // Map CMS logo data to MarqueeItem format; name-match static for display props
+        const mapped: MarqueeItem[] = data.map((d) => {
+          const staticMatch = staticClientLogos.find(
+            (s) => s.name.toLowerCase() === d.name.toLowerCase()
+          )
+          return {
+            name: d.name,
+            logo: d.logo,
+            maxHeight: staticMatch?.maxHeight,
+            maxWidth: staticMatch?.maxWidth,
+            scale: staticMatch?.scale,
+            opacity: staticMatch?.opacity,
+            contrast: staticMatch?.contrast,
+            brightness: staticMatch?.brightness,
+          }
+        })
+        setClientLogos(mapped)
+      }
+    })
+  }, [])
 
   const handleScrollToContact = () => {
     const contactSec = document.getElementById('contact')

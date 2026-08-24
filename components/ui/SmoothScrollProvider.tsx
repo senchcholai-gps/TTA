@@ -27,11 +27,22 @@ export default function SmoothScrollProvider({
 
     if (prefersReducedMotion) return
 
+    // On mobile touch devices, native momentum scrolling is smoother, hardware-accelerated,
+    // and eliminates JS touch-interception lag, jitter, and freezing.
+    const isTouchDevice =
+      typeof window !== 'undefined' &&
+      ('ontouchstart' in window || navigator.maxTouchPoints > 0 || window.innerWidth < 768)
+
+    if (isTouchDevice && window.innerWidth < 768) {
+      // Use 100% native smooth scrolling on mobile
+      return
+    }
+
     const lenis = new Lenis({
       duration: 1.2,         // scroll duration multiplier — 1.2 is premium-smooth
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // easeOutExpo
       smoothWheel: true,
-      touchMultiplier: 1.8,  // slightly accelerated touch for mobile premium feel
+      touchMultiplier: 0,    // Do NOT intercept/block native touch momentum
     })
 
     function raf(time: number) {

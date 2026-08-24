@@ -4,9 +4,12 @@ import Link from 'next/link'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { portfolioItems } from '@/lib/portfolio-data'
+import { getPortfolioItems } from '@/lib/supabase/cms'
 import { ChevronRight, ArrowRight, Video, Calendar, Eye, Users } from 'lucide-react'
 import NewsletterCTA from '@/components/blog/NewsletterCTA'
 import { ClientAvatar } from '@/components/portfolio/PortfolioGrid'
+
+export const dynamic = 'force-dynamic'
 
 type Props = {
   params: Promise<{ slug: string }>
@@ -30,7 +33,8 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
-  const item = portfolioItems.find((p) => p.slug === slug)
+  const allItems = await getPortfolioItems()
+  const item = allItems.find((p) => p.slug === slug) || portfolioItems.find((p) => p.slug === slug)
   if (!item) return {}
 
   return {
@@ -54,18 +58,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PortfolioItemPage({ params }: Props) {
   const { slug } = await params
-  const currentIndex = portfolioItems.findIndex((p) => p.slug === slug)
+  const allItems = await getPortfolioItems()
+  const currentIndex = allItems.findIndex((p) => p.slug === slug)
   if (currentIndex === -1) notFound()
 
-  const item = portfolioItems[currentIndex]
+  const item = allItems[currentIndex]
 
   // Find related projects (filter by category and exclude current)
-  const related = portfolioItems
+  const related = allItems
     .filter((p) => p.category === item.category && p.slug !== slug)
     .slice(0, 3)
 
   if (related.length < 3) {
-    const extra = portfolioItems.filter((p) => p.slug !== slug && !related.find((r) => r.slug === p.slug))
+    const extra = allItems.filter((p) => p.slug !== slug && !related.find((r) => r.slug === p.slug))
     related.push(...extra.slice(0, 3 - related.length))
   }
 

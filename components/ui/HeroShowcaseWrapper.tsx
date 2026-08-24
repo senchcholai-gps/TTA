@@ -31,17 +31,27 @@ const HeroShowcaseWrapper = memo(function HeroShowcaseWrapper() {
   useEffect(() => {
     if (!outerRef.current) return
 
+    let rAFId: number | null = null
     const observer = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const w = entry.contentRect.width
-        if (w > 0) {
-          setScale(w / DESIGN_W)
+      if (rAFId) cancelAnimationFrame(rAFId)
+      rAFId = requestAnimationFrame(() => {
+        for (const entry of entries) {
+          const w = entry.contentRect.width
+          if (w > 0) {
+            setScale((prev) => {
+              const next = w / DESIGN_W
+              return Math.abs(prev - next) > 0.005 ? next : prev
+            })
+          }
         }
-      }
+      })
     })
 
     observer.observe(outerRef.current)
-    return () => observer.disconnect()
+    return () => {
+      if (rAFId) cancelAnimationFrame(rAFId)
+      observer.disconnect()
+    }
   }, [])
 
   return (

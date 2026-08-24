@@ -17,7 +17,7 @@
  *  ─ z-index: -10 ensures all elements remain strictly behind page content.
  */
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, useMotionValue, useSpring, useScroll, useTransform, useReducedMotion } from 'framer-motion'
 
 // ─── Cursor orb constants ─────────────────────────────────────────────────────
@@ -128,6 +128,16 @@ function mkParticle(w: number, h: number): Particle {
 export default function GlobalAmbientBackground() {
   const shouldReduceMotion = useReducedMotion()
   const { scrollY } = useScroll()
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768 || ('ontouchstart' in window && window.innerWidth < 1024))
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile, { passive: true })
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // ── Cursor orb refs (RAF-driven, zero React re-renders) ───────────────────
   const orbRef   = useRef<HTMLDivElement>(null)
@@ -170,7 +180,7 @@ export default function GlobalAmbientBackground() {
   const yLayer5 = useTransform([y5, yScroll5], ([ly, ls]) => (ly as number) + (ls as number))
 
   useEffect(() => {
-    if (shouldReduceMotion) return
+    if (shouldReduceMotion || isMobile) return
 
     // ── Shared mouse listener ────────────────────────────────────────────
     const onMove = (e: MouseEvent) => {
@@ -195,7 +205,7 @@ export default function GlobalAmbientBackground() {
 
       // Particle mouse position
       mousePt.current.x = e.clientX
-      mousePt.current.y = e.clientY + window.scrollY
+      mousePt.current.y = e.clientY
     }
     window.addEventListener('mousemove', onMove, { passive: true })
 
@@ -214,25 +224,24 @@ export default function GlobalAmbientBackground() {
     }
     orbRaf.current = requestAnimationFrame(orbTick)
 
-    // ── Particle canvas (50 particles count) ──────────────────────────────
+    // ── Particle canvas (Fixed viewport size on desktop: 1920x1080 instead of 15000px height!) ──
     const canvas = canvasRef.current
     const ctx = canvas?.getContext('2d')
     if (canvas && ctx) {
       let w = window.innerWidth
-      let h = document.documentElement.scrollHeight
+      let h = window.innerHeight
       const resize = () => {
         w = window.innerWidth
-        h = document.documentElement.scrollHeight
+        h = window.innerHeight
         canvas.width = w
         canvas.height = h
       }
       resize()
       window.addEventListener('resize', resize, { passive: true })
       
-      const particleCount = window.innerWidth < 768 ? 15 : (window.innerWidth < 1024 ? 35 : 50)
-      const pts: Particle[] = Array.from({ length: particleCount }, () => mkParticle(w, h))
-      const ATTRACT_ZONE = 500
-      const REPEL_ZONE = 100
+      const pts: Particle[] = Array.from({ length: 30 }, () => mkParticle(w, h))
+      const ATTRACT_ZONE = 400
+      const REPEL_ZONE = 80
       const FORCE = 0.015
 
       const ptTick = () => {
@@ -254,7 +263,7 @@ export default function GlobalAmbientBackground() {
           p.scale += p.scaleSpeed
           if (p.scale > 1.05 || p.scale < 0.95) p.scaleSpeed = -p.scaleSpeed
 
-          // Interaction with cursor (Subtle attraction and repulsion)
+          // Interaction with cursor
           const dx = mousePt.current.x - p.x
           const dy = mousePt.current.y - p.y
           const dist = Math.sqrt(dx * dx + dy * dy)
@@ -275,12 +284,17 @@ export default function GlobalAmbientBackground() {
           p.x += p.vx * p.speed
           p.y += p.vy * p.speed
 
+          // Wrap boundaries
+          if (p.x < 0) p.x = w
+          if (p.x > w) p.x = 0
+          if (p.y < 0) p.y = h
+          if (p.y > h) p.y = 0
+
           ctx.save()
           ctx.translate(p.x, p.y)
           ctx.rotate(p.angle)
           ctx.scale(p.scale, p.scale)
 
-          // Shape variance: crosses and dots
           if (p.r > 2.8) {
             ctx.strokeStyle = `rgba(${p.color[0]},${p.color[1]},${p.color[2]},${p.alpha})`
             ctx.lineWidth = 1
@@ -307,34 +321,79 @@ export default function GlobalAmbientBackground() {
       if (orbRaf.current) cancelAnimationFrame(orbRaf.current)
       if (particleRaf.current) cancelAnimationFrame(particleRaf.current)
     }
-  }, [shouldReduceMotion, rX1, rY1, rX2, rY2, rX3, rY3, rX4, rY4, rX5, rY5])
+  }, [shouldReduceMotion, isMobile, rX1, rY1, rX2, rY2, rX3, rY3, rX4, rY4, rX5, rY5])
 
   if (shouldReduceMotion) return null
 
+  // ── Mobile Static Lightweight Ambient Background ─────────────────────────
+  if (isMobile) {
+    return (
+      <div
+        aria-hidden="true"
+        className="fixed inset-0 pointer-events-none select-none overflow-hidden -z-10 bg-[#FDFBFF]"
+      >
+        <div
+          className="absolute -top-[10%] -left-[15%] w-[380px] h-[380px] rounded-full opacity-[0.06] blur-2xl pointer-events-none"
+          style={{ background: 'radial-gradient(circle, #D6003C 0%, #8B0095 50%, transparent 70%)' }}
+        />
+        <div
+          className="absolute top-[40%] -right-[15%] w-[400px] h-[400px] rounded-full opacity-[0.06] blur-2xl pointer-events-none"
+          style={{ background: 'radial-gradient(circle, #3D00D6 0%, #8B0095 50%, transparent 70%)' }}
+        />
+        <div
+          className="absolute -bottom-[10%] left-[10%] w-[350px] h-[350px] rounded-full opacity-[0.05] blur-2xl pointer-events-none"
+          style={{ background: 'radial-gradient(circle, #D6003C 0%, #3D00D6 60%, transparent 70%)' }}
+        />
+      </div>
+    )
+  }
+
   return (
     <>
-      {/* ── Cursor orb — fixed view, follows viewport behind content ─────────────────────────── */}
-      <div aria-hidden="true"
+      {/* ── Cursor orb — fixed view, follows viewport behind content on desktop ── */}
+      <div
+        aria-hidden="true"
         className="fixed top-0 left-0 pointer-events-none select-none hidden md:block"
-        style={{ zIndex: -5 }}>
-        <div ref={orbRef} style={{
-          position: 'absolute', width: ORB, height: ORB, borderRadius: '50%',
-          background: 'radial-gradient(circle at 45% 45%, rgba(214,0,60,0.18) 0%, rgba(139,0,149,0.16) 40%, rgba(61,0,214,0.12) 75%, transparent 100%)',
-          filter: 'blur(120px)', willChange: 'transform',
-          transform: 'translate3d(-2000px,-2000px,0)', mixBlendMode: 'multiply'
-        }}/>
-        <div ref={innerRef} style={{
-          position: 'absolute', width: Math.round(ORB * 0.7), height: Math.round(ORB * 0.7), borderRadius: '50%',
-          background: 'radial-gradient(circle at 55% 45%, rgba(139,0,149,0.10) 0%, rgba(61,0,214,0.07) 40%, transparent 70%)',
-          filter: 'blur(80px)', willChange: 'transform',
-          transform: 'translate3d(-2000px,-2000px,0)', mixBlendMode: 'multiply'
-        }}/>
+        style={{ zIndex: -5 }}
+      >
+        <div
+          ref={orbRef}
+          style={{
+            position: 'absolute',
+            width: ORB,
+            height: ORB,
+            borderRadius: '50%',
+            background:
+              'radial-gradient(circle at 45% 45%, rgba(214,0,60,0.18) 0%, rgba(139,0,149,0.16) 40%, rgba(61,0,214,0.12) 75%, transparent 100%)',
+            filter: 'blur(120px)',
+            willChange: 'transform',
+            transform: 'translate3d(-2000px,-2000px,0)',
+            mixBlendMode: 'multiply',
+          }}
+        />
+        <div
+          ref={innerRef}
+          style={{
+            position: 'absolute',
+            width: Math.round(ORB * 0.7),
+            height: Math.round(ORB * 0.7),
+            borderRadius: '50%',
+            background:
+              'radial-gradient(circle at 55% 45%, rgba(139,0,149,0.10) 0%, rgba(61,0,214,0.07) 40%, transparent 70%)',
+            filter: 'blur(80px)',
+            willChange: 'transform',
+            transform: 'translate3d(-2000px,-2000px,0)',
+            mixBlendMode: 'multiply',
+          }}
+        />
       </div>
 
       {/* ── Main parallax layers container ──────────────────────────────── */}
-      <div aria-hidden="true"
+      <div
+        aria-hidden="true"
         className="absolute inset-0 pointer-events-none select-none"
-        style={{ zIndex: -10, overflow: 'hidden' }}>
+        style={{ zIndex: -10, overflow: 'hidden' }}
+      >
 
         {/* ══ LAYER 1 — Far Parallax Layer (~4px range) ══════════════════════
             Renders animated mesh gradients, color glows and streaks */}
@@ -908,9 +967,11 @@ export default function GlobalAmbientBackground() {
             Renders canvas particles, sparkle dots, and high-frequency sparks */}
         <motion.div className="absolute inset-0" style={{ x: x5, y: yLayer5 }}>
           
-          {/* Particle canvas embedded in parallax to shift with depth */}
-          <canvas ref={canvasRef} aria-hidden="true"
-            className="absolute top-0 left-0 w-full pointer-events-none select-none"
+          {/* Particle canvas fixed to desktop viewport */}
+          <canvas
+            ref={canvasRef}
+            aria-hidden="true"
+            className="fixed top-0 left-0 w-screen h-screen pointer-events-none select-none -z-5 hidden md:block"
           />
 
           {/* Standard sparkle dots — 18 total */}

@@ -1,17 +1,27 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { ArrowRight, Calendar, Clock } from 'lucide-react'
 import FadeInView from '@/components/ui/FadeInView'
 import { staggerContainer, staggerItem, cardHover } from '@/lib/motion'
-import { blogPosts } from '@/lib/blog-data'
+import { blogPosts, BlogPost } from '@/lib/blog-data'
+import { getBlogPosts } from '@/lib/supabase/cms'
 
 export default function BlogSection() {
   const shouldReduceMotion = useReducedMotion()
 
-  // Always pull from the single source of truth — first 3 official posts
-  const previewPosts = blogPosts.slice(0, 3)
+  const [posts, setPosts] = useState<BlogPost[]>(blogPosts)
+
+  useEffect(() => {
+    getBlogPosts().then((data) => {
+      if (data && data.length > 0) {
+        setPosts(data)
+      }
+    })
+  }, [])
+
+  const previewPosts = posts.slice(0, 3)
 
   return (
     <section id="blog" className="py-14 sm:py-16 md:py-20 lg:py-24 bg-transparent overflow-hidden">

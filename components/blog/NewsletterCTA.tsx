@@ -6,17 +6,43 @@ import { Send, CheckCircle2, Loader2 } from 'lucide-react'
 
 export default function NewsletterCTA() {
   const [email, setEmail] = useState('')
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'success'>('idle')
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
+  const [errorMsg, setErrorMsg] = useState('')
+  const [successMsg, setSuccessMsg] = useState('You are subscribed!')
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    if (!email || !email.includes('@')) return
+    const trimmed = email.trim()
+    if (!trimmed || !trimmed.includes('@')) {
+      setStatus('error')
+      setErrorMsg('Please enter a valid email address.')
+      return
+    }
 
     setStatus('submitting')
-    setTimeout(() => {
-      setStatus('success')
-      setEmail('')
-    }, 1200)
+    setErrorMsg('')
+
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: trimmed })
+      })
+
+      const data = await res.json().catch(() => ({}))
+
+      if (res.ok && data.success) {
+        setStatus('success')
+        setSuccessMsg(data.message || 'You are subscribed!')
+        setEmail('')
+      } else {
+        setStatus('error')
+        setErrorMsg(data.error || 'Something went wrong. Please try again.')
+      }
+    } catch {
+      setStatus('error')
+      setErrorMsg('Something went wrong. Please try again.')
+    }
   }
 
   return (
@@ -40,7 +66,7 @@ export default function NewsletterCTA() {
               className="flex flex-col items-center gap-2 text-white py-2"
             >
               <CheckCircle2 size={36} className="text-white animate-bounce" />
-              <span className="text-base font-bold">You are subscribed!</span>
+              <span className="text-base font-bold">{successMsg}</span>
               <span className="text-xs text-white/70">Welcome to the Amigos growth circle.</span>
             </motion.div>
           ) : (
@@ -49,30 +75,40 @@ export default function NewsletterCTA() {
               onSubmit={handleSubmit}
               initial={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
             >
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your work email"
-                className="flex-grow px-5 py-3.5 rounded-xl border border-white/20 bg-white/10 text-white placeholder-white/50 text-sm focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/20 transition-all"
-              />
-              <button
-                type="submit"
-                disabled={status === 'submitting'}
-                className="px-6 py-3.5 bg-white text-brand-purple rounded-xl text-sm font-bold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 hover:scale-[1.02] disabled:opacity-75 cursor-pointer"
-              >
-                {status === 'submitting' ? (
-                  <Loader2 size={16} className="animate-spin text-brand-purple" />
-                ) : (
-                  <>
-                    <span>Join Now</span>
-                    <Send size={14} />
-                  </>
-                )}
-              </button>
+              <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value)
+                    if (status === 'error') setStatus('idle')
+                  }}
+                  placeholder="Enter your work email"
+                  className="flex-grow px-5 py-3.5 rounded-xl border border-white/20 bg-white/10 text-white placeholder-white/50 text-sm focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/20 transition-all"
+                />
+                <button
+                  type="submit"
+                  disabled={status === 'submitting'}
+                  className="px-6 py-3.5 bg-white text-brand-purple rounded-xl text-sm font-bold hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2 hover:scale-[1.02] disabled:opacity-75 cursor-pointer flex-shrink-0"
+                >
+                  {status === 'submitting' ? (
+                    <Loader2 size={16} className="animate-spin text-brand-purple" />
+                  ) : (
+                    <>
+                      <span>Join Now</span>
+                      <Send size={14} />
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {status === 'error' && (
+                <p className="text-xs text-rose-200 font-semibold mt-2 text-center">
+                  {errorMsg}
+                </p>
+              )}
             </motion.form>
           )}
         </AnimatePresence>

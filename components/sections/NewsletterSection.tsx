@@ -9,25 +9,44 @@ export default function NewsletterSection() {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
+  const [successMsg, setSuccessMsg] = useState("Thanks! We'll be in touch.")
 
   const handleSubscribe = async (e: FormEvent) => {
     e.preventDefault()
     
-    // basic validation
+    // client-side validation
+    const trimmed = email.trim()
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email.trim())) {
+    if (!trimmed || !emailRegex.test(trimmed)) {
       setStatus('error')
       setErrorMsg('Please enter a valid email address.')
       return
     }
 
     setStatus('loading')
+    setErrorMsg('')
     
-    // simulate network
-    setTimeout(() => {
-      setStatus('success')
-      setEmail('')
-    }, 1000)
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: trimmed })
+      })
+
+      const data = await res.json().catch(() => ({}))
+
+      if (res.ok && data.success) {
+        setStatus('success')
+        setSuccessMsg(data.message || "Thanks! We'll be in touch.")
+        setEmail('')
+      } else {
+        setStatus('error')
+        setErrorMsg(data.error || 'Something went wrong. Please try again.')
+      }
+    } catch {
+      setStatus('error')
+      setErrorMsg('Something went wrong. Please try again.')
+    }
   }
 
   const shouldReduceMotion = useReducedMotion()
@@ -52,7 +71,7 @@ export default function NewsletterSection() {
                 className="flex items-center justify-center gap-2 p-4 bg-emerald-50 border border-emerald-100 text-emerald-800 rounded-xl max-w-md mx-auto"
               >
                 <CheckCircle2 size={18} className="text-emerald-600 flex-shrink-0" />
-                <span className="text-sm font-semibold">You're in! Check your inbox for updates.</span>
+                <span className="text-sm font-semibold">{successMsg}</span>
               </motion.div>
             ) : (
               <motion.form

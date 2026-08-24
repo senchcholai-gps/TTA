@@ -5,6 +5,7 @@ export interface Testimonial {
   text: string
   initials: string
   rating: number
+  avatar_url?: string | null
 }
 
 export const testimonials: Testimonial[] = [

@@ -5,7 +5,9 @@ import BlogHero from '@/components/blog/BlogHero'
 import FeaturedPost from '@/components/blog/FeaturedPost'
 import BlogGrid from '@/components/blog/BlogGrid'
 import NewsletterCTA from '@/components/blog/NewsletterCTA'
-import { blogPosts } from '@/lib/blog-data'
+import { getBlogPosts } from '@/lib/supabase/cms'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Blog & Insights | The Three Amigos — AI Marketing Agency, Chennai',
@@ -38,17 +40,17 @@ export const metadata: Metadata = {
   }
 }
 
-export default function BlogPage() {
-  // Featured post: first article in the official dataset
-  const featured = blogPosts[0]
+export default async function BlogPage() {
+  const allPosts = await getBlogPosts()
+  const featured = allPosts[0]
 
   return (
     <div className="w-full bg-transparent relative min-h-screen flex flex-col justify-between">
       <div>
         <Header />
         <BlogHero />
-        <FeaturedPost post={featured} />
-        <BlogGrid posts={blogPosts} />
+        {featured && <FeaturedPost post={featured} />}
+        <BlogGrid posts={allPosts} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <NewsletterCTA />
         </div>

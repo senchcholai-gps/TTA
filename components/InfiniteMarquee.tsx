@@ -1,6 +1,4 @@
-'use client'
-
-import React from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import ClientLogo from '@/components/ui/ClientLogo'
 
 export interface MarqueeItem {
@@ -22,6 +20,23 @@ interface InfiniteMarqueeProps {
 }
 
 export default function InfiniteMarquee({ items, isLogoMode = false, speed = 40 }: InfiniteMarqueeProps) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [isInView, setIsInView] = useState(true)
+
+  useEffect(() => {
+    if (!containerRef.current) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting)
+      },
+      { rootMargin: '100px' }
+    )
+
+    observer.observe(containerRef.current)
+    return () => observer.disconnect()
+  }, [])
+
   if (!items || items.length === 0) return null
 
   // Duplicate items array 4x (2 identical pairs of full sets) to guarantee sub-pixel seamless infinite loop
@@ -33,6 +48,7 @@ export default function InfiniteMarquee({ items, isLogoMode = false, speed = 40 
 
   return (
     <div
+      ref={containerRef}
       className="relative w-full overflow-hidden py-4 select-none bg-transparent"
       style={{
         maskImage: 'linear-gradient(to right, transparent 0%, black 2%, black 98%, transparent 100%)',
@@ -43,6 +59,7 @@ export default function InfiniteMarquee({ items, isLogoMode = false, speed = 40 
         className="flex w-max will-change-transform [--marquee-gap-half:1.1rem] sm:[--marquee-gap-half:1.35rem] md:[--marquee-gap-half:1.6rem]"
         style={{
           animation: `hero-marquee-loop ${dynamicDuration}s linear infinite`,
+          animationPlayState: isInView ? 'running' : 'paused',
         }}
       >
         {quadItems.map((item, idx) => (
