@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { PhoneCall, ArrowLeft, Loader2, Check, AlertCircle, Mail, MapPin, MessageSquare } from 'lucide-react'
+import { PhoneCall, ArrowLeft, Loader2, Check, AlertCircle, Mail, MapPin, MessageSquare, ExternalLink } from 'lucide-react'
 import AdminHeader from '@/components/admin/AdminHeader'
 import AdminSidebar from '@/components/admin/AdminSidebar'
 import { updateSiteContentSection } from '@/lib/supabase/cms'
@@ -46,6 +46,8 @@ export default function AdminContactCTAClient({ userEmail, initialContent }: Adm
     }
   }
 
+  const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(content.contact_email || 'thethreeamigosdm@gmail.com')}`
+
   return (
     <div className="min-h-screen w-full bg-slate-50 flex flex-col font-sans text-[#1A1A1A]">
       <AdminHeader userEmail={userEmail} currentModule="CTA / Contact" />
@@ -71,6 +73,17 @@ export default function AdminContactCTAClient({ userEmail, initialContent }: Adm
                 Control consultation CTAs, WhatsApp floating link, audit form titles, and agency contact details.
               </p>
             </div>
+            {content.contact_email && (
+              <a
+                href={gmailComposeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-2 bg-neutral-black hover:bg-[#3D00D6] text-white rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-xs cursor-pointer flex-shrink-0"
+              >
+                <ExternalLink size={14} />
+                <span>Contact via Gmail</span>
+              </a>
+            )}
           </div>
 
           {statusMessage && (
@@ -184,9 +197,22 @@ export default function AdminContactCTAClient({ userEmail, initialContent }: Adm
                 </div>
 
                 <div className="space-y-1">
-                  <label className="block text-xs font-extrabold uppercase tracking-wider text-neutral-black">
-                    Agency Email Address
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label className="block text-xs font-extrabold uppercase tracking-wider text-neutral-black">
+                      Agency Email Address
+                    </label>
+                    {content.contact_email && (
+                      <a
+                        href={gmailComposeUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[11px] font-bold text-[#3D00D6] hover:text-[#D6003C] transition flex items-center gap-1"
+                      >
+                        <ExternalLink size={11} />
+                        <span>Open in Gmail</span>
+                      </a>
+                    )}
+                  </div>
                   <input
                     type="email"
                     value={content.contact_email}

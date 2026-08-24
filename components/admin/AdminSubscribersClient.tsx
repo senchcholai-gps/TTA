@@ -309,7 +309,9 @@ export default function AdminSubscribersClient({
                             <div className="flex items-center justify-end gap-2">
                               {/* Manual Contact Action */}
                               <a
-                                href={`mailto:${sub.email}?subject=The%20Three%20Amigos%20-%20Following%20up%20on%20your%20inquiry`}
+                                href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(sub.email)}&su=The%20Three%20Amigos%20-%20Following%20up%20on%20your%20inquiry`}
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="px-3.5 py-1.5 bg-neutral-black hover:bg-brand-purple text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer"
                               >
                                 <ExternalLink size={13} />
