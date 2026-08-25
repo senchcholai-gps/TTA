@@ -178,17 +178,21 @@ export default function Header() {
   return (
     <>
     <header
-      className="sticky top-0 z-50"
+      className="sticky top-0 z-50 w-full"
       style={{
-        backgroundColor: scrolled ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.80)',
-        backdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'blur(8px) saturate(140%)',
-        WebkitBackdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'blur(8px) saturate(140%)',
+        paddingTop: 'env(safe-area-inset-top, 0px)',
+        backgroundColor: scrolled ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.85)',
+        backdropFilter: 'blur(16px) saturate(160%)',
+        WebkitBackdropFilter: 'blur(16px) saturate(160%)',
         boxShadow: scrolled
           ? '0 1px 24px 0 rgba(26,26,26,0.08)'
           : '0 1px 0 0 rgba(0,0,0,0.04)',
+        transform: 'translate3d(0, 0, 0)',
+        WebkitTransform: 'translate3d(0, 0, 0)',
+        isolation: 'isolate',
         transition: shouldReduceMotion
           ? 'none'
-          : 'background-color 250ms ease-out, backdrop-filter 250ms ease-out, box-shadow 250ms ease-out',
+          : 'background-color 200ms ease-out, box-shadow 200ms ease-out',
       }}
     >
       {/* ── Header bar ────────────────────────────────── */}
@@ -198,7 +202,7 @@ export default function Header() {
           <img
             src="/TTA_Logo_Landscape.png"
             alt="The Three Amigos"
-            className="h-[54px] md:h-[63px] w-auto object-contain"
+            className="h-[40px] sm:h-[44px] md:h-[48px] lg:h-[56px] w-auto object-contain select-none"
           />
         </a>
 
@@ -306,7 +310,8 @@ export default function Header() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 top-20 z-40 bg-black/20 md:hidden"
+              className="fixed inset-0 z-40 bg-black/20 md:hidden"
+              style={{ top: 'calc(5rem + env(safe-area-inset-top, 0px))' }}
               aria-hidden="true"
               onClick={closeMenu}
             />
@@ -318,7 +323,8 @@ export default function Header() {
               animate={{ opacity: 1, y: 0 }}
               exit={shouldReduceMotion ? { opacity: 0, y: 0 } : { opacity: 0, y: -8 }}
               transition={{ duration: 0.25, ease: [0.25, 1, 0.5, 1] }}
-              className="fixed top-20 left-0 right-0 bottom-0 z-50 md:hidden bg-white border-t border-gray-100 overflow-y-auto overscroll-contain"
+              className="fixed left-0 right-0 bottom-0 z-50 md:hidden bg-white border-t border-gray-100 overflow-y-auto overscroll-contain"
+              style={{ top: 'calc(5rem + env(safe-area-inset-top, 0px))' }}
               role="dialog"
               aria-modal="true"
               aria-label="Navigation menu"

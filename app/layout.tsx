@@ -20,10 +20,18 @@ export const metadata: Metadata = {
   description: 'We help brands grow faster with AI-powered marketing, strategic social media management, in-house video production, influencer collaborations, and performance digital campaigns.',
   generator: 'v0.app',
   icons: {
-    icon: '/favicon.png',
-    apple: '/favicon.png',
-    shortcut: '/favicon.png',
+    icon: [
+      { url: '/favicon.ico?v=3', sizes: 'any' },
+      { url: '/favicon-16x16.png?v=3', type: 'image/png', sizes: '16x16' },
+      { url: '/favicon-32x32.png?v=3', type: 'image/png', sizes: '32x32' },
+      { url: '/favicon-48x48.png?v=3', type: 'image/png', sizes: '48x48' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png?v=3', sizes: '180x180', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico?v=3',
   },
+  manifest: '/site.webmanifest?v=3',
 }
 
 export const viewport: Viewport = {
@@ -40,6 +48,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${poppins.variable} ${inter.variable}`}>
+      <head>
+        <link rel="icon" href="/favicon.ico?v=3" sizes="any" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=3" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=3" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=3" />
+        <link rel="manifest" href="/site.webmanifest?v=3" />
+      </head>
       <body className="antialiased font-inter bg-[#FDFBFF] text-neutral-black relative">
         {/*
           GlobalAmbientBackground — renders the full premium background system
