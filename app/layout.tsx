@@ -21,17 +21,17 @@ export const metadata: Metadata = {
   generator: 'v0.app',
   icons: {
     icon: [
-      { url: '/favicon.ico?v=3', sizes: 'any' },
-      { url: '/favicon-16x16.png?v=3', type: 'image/png', sizes: '16x16' },
-      { url: '/favicon-32x32.png?v=3', type: 'image/png', sizes: '32x32' },
-      { url: '/favicon-48x48.png?v=3', type: 'image/png', sizes: '48x48' },
+      { url: '/favicon.ico?v=5', sizes: 'any' },
+      { url: '/favicon-16x16.png?v=5', type: 'image/png', sizes: '16x16' },
+      { url: '/favicon-32x32.png?v=5', type: 'image/png', sizes: '32x32' },
+      { url: '/favicon-48x48.png?v=5', type: 'image/png', sizes: '48x48' },
     ],
     apple: [
-      { url: '/apple-touch-icon.png?v=3', sizes: '180x180', type: 'image/png' },
+      { url: '/apple-touch-icon.png?v=5', sizes: '180x180', type: 'image/png' },
     ],
-    shortcut: '/favicon.ico?v=3',
+    shortcut: '/favicon.ico?v=5',
   },
-  manifest: '/site.webmanifest?v=3',
+  manifest: '/site.webmanifest?v=5',
 }
 
 export const viewport: Viewport = {
@@ -49,11 +49,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${poppins.variable} ${inter.variable}`}>
       <head>
-        <link rel="icon" href="/favicon.ico?v=3" sizes="any" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=3" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=3" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=3" />
-        <link rel="manifest" href="/site.webmanifest?v=3" />
+        <link rel="icon" href="/favicon.ico?v=5" sizes="any" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=5" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=5" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=5" />
+        <link rel="manifest" href="/site.webmanifest?v=5" />
       </head>
       <body className="antialiased font-inter bg-[#FDFBFF] text-neutral-black relative">
         {/*
