@@ -180,8 +180,9 @@ export default function Home() {
   }
 
   return (
-    <div className="w-full bg-transparent relative overflow-clip text-neutral-black">
+    <>
       <Header />
+      <div className="w-full bg-transparent relative overflow-clip text-neutral-black">
 
 
 
@@ -309,6 +310,7 @@ export default function Home() {
       {/* Floating UI Elements */}
       <FloatingWhatsApp />
       <StickyConsultationCTA />
-    </div>
+      </div>
+    </>
   )
 }
