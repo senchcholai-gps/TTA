@@ -178,7 +178,7 @@ export default function Header() {
   return (
     <>
     <header
-      className="fixed top-0 left-0 right-0 z-50 w-full md:sticky md:left-auto md:right-auto"
+      className="sticky top-0 z-50 w-full"
       style={{
         paddingTop: 'env(safe-area-inset-top, 0px)',
         backgroundColor: scrolled ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.85)',
@@ -298,10 +298,6 @@ export default function Header() {
       </div>
 
     </header>
-
-      {/* Spacer to push content below the fixed mobile header (h-20 = 80px).
-          On md+ the header is sticky (in-flow) so the spacer is hidden. */}
-      <div className="h-20 md:hidden" style={{ paddingTop: 'env(safe-area-inset-top, 0px)' }} aria-hidden="true" />
 
       {/* ── Mobile Drawer — rendered OUTSIDE <header> to avoid sticky/fixed stacking context issues ── */}
       <AnimatePresence>
