@@ -322,6 +322,7 @@ export type Database = {
           id: string
           email: string
           status: string
+          source: string | null
           created_at: string
           updated_at: string
         }
@@ -329,6 +330,7 @@ export type Database = {
           id?: string
           email: string
           status?: string
+          source?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -336,6 +338,7 @@ export type Database = {
           id?: string
           email?: string
           status?: string
+          source?: string | null
           created_at?: string
           updated_at?: string
         }

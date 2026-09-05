@@ -72,7 +72,9 @@ export default function AdminSubscribersClient({
 
   // Filtered subscribers
   const filteredSubscribers = subscribers.filter((sub) => {
-    const matchesSearch = sub.email.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesSearch =
+      sub.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (sub.source && sub.source.toLowerCase().includes(searchQuery.toLowerCase()))
     const matchesFilter = statusFilter === 'all' || sub.status === statusFilter
     return matchesSearch && matchesFilter
   })
@@ -251,6 +253,7 @@ export default function AdminSubscribersClient({
                   <thead>
                     <tr className="bg-slate-50/80 border-b border-gray-200 text-neutral-black text-[11px] uppercase tracking-wider font-extrabold">
                       <th className="px-6 py-4">Subscriber Email</th>
+                      <th className="px-6 py-4">Package</th>
                       <th className="px-6 py-4">Date Submitted</th>
                       <th className="px-6 py-4">Status</th>
                       <th className="px-6 py-4 text-right">Actions</th>
@@ -273,6 +276,19 @@ export default function AdminSubscribersClient({
                                 </span>
                               </div>
                             </div>
+                          </td>
+
+                          {/* Package */}
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {sub.source ? (
+                              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-extrabold bg-purple-50 text-brand-purple border border-purple-200/70">
+                                {sub.source}
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 text-neutral-500">
+                                Newsletter
+                              </span>
+                            )}
                           </td>
 
                           {/* Date */}
@@ -309,7 +325,7 @@ export default function AdminSubscribersClient({
                             <div className="flex items-center justify-end gap-2">
                               {/* Manual Contact Action */}
                               <a
-                                href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(sub.email)}&su=The%20Three%20Amigos%20-%20Following%20up%20on%20your%20inquiry`}
+                                href={`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(sub.email)}&su=${encodeURIComponent(sub.source ? `The Three Amigos - ${sub.source} Package Details` : 'The Three Amigos - Following up on your inquiry')}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="px-3.5 py-1.5 bg-neutral-black hover:bg-brand-purple text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer"

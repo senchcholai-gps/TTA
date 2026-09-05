@@ -318,6 +318,7 @@ CREATE TABLE IF NOT EXISTS public.subscribers (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email TEXT NOT NULL UNIQUE,
     status TEXT NOT NULL DEFAULT 'new',
+    source TEXT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -331,15 +332,25 @@ CREATE TRIGGER update_subscribers_updated_at
 ALTER TABLE public.subscribers ENABLE ROW LEVEL SECURITY;
 
 GRANT INSERT ON public.subscribers TO anon, authenticated;
+GRANT UPDATE (source, status, updated_at) ON public.subscribers TO anon, authenticated;
 GRANT SELECT, UPDATE, DELETE ON public.subscribers TO authenticated;
 
--- Public users can only INSERT their email (No SELECT, UPDATE, DELETE)
+-- Public users can INSERT their email
 DROP POLICY IF EXISTS "Public can insert subscribers" ON public.subscribers;
 DROP POLICY IF EXISTS "Anon and authenticated can insert subscribers" ON public.subscribers;
 CREATE POLICY "Anon and authenticated can insert subscribers"
     ON public.subscribers
     FOR INSERT
     TO anon, authenticated
+    WITH CHECK (true);
+
+-- Public users can update subscriber source on duplicate submission
+DROP POLICY IF EXISTS "Anon and authenticated can update subscriber source" ON public.subscribers;
+CREATE POLICY "Anon and authenticated can update subscriber source"
+    ON public.subscribers
+    FOR UPDATE
+    TO anon, authenticated
+    USING (true)
     WITH CHECK (true);
 
 -- Authenticated Admins have full access to view, update status, and delete subscribers

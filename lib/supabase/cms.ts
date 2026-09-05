@@ -1422,6 +1422,7 @@ export interface AdminSubscriberItem {
   id: string
   email: string
   status: 'new' | 'contacted' | 'converted'
+  source?: string | null
   created_at: string
   updated_at: string
 }

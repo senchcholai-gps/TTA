@@ -1,7 +1,7 @@
 'use client'
 
-import React, { memo } from 'react'
-import { motion, useReducedMotion, Variants } from 'framer-motion'
+import React, { memo, useState, FormEvent } from 'react'
+import { motion, AnimatePresence, useReducedMotion, Variants } from 'framer-motion'
 import FadeInView from '@/components/ui/FadeInView'
 
 const CUBIC_EASE = [0.22, 1, 0.36, 1] as const
@@ -52,6 +52,48 @@ const PricingCard = memo(function PricingCard({
   plan,
   shouldReduceMotion
 }: PricingCardProps) {
+  const [isOpen, setIsOpen] = useState(false)
+  const [email, setEmail] = useState('')
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [message, setMessage] = useState('')
+
+  const handleEmailSubmit = async (e: FormEvent) => {
+    e.preventDefault()
+    const trimmed = email.trim()
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!trimmed || !emailRegex.test(trimmed)) {
+      setStatus('error')
+      setMessage('Please enter a valid email.')
+      return
+    }
+    setStatus('loading')
+    setMessage('')
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: trimmed, source: plan.name })
+      })
+      const data = await res.json().catch(() => ({}))
+      if (res.ok && data.success) {
+        if (data.duplicate) {
+          setStatus('success')
+          setMessage("You're already on our list!")
+        } else {
+          setStatus('success')
+          setMessage(data.message || "Thanks! We'll be in touch.")
+        }
+        setEmail('')
+      } else {
+        setStatus('error')
+        setMessage(data.error || 'Something went wrong. Please try again.')
+      }
+    } catch {
+      setStatus('error')
+      setMessage('Something went wrong. Please try again.')
+    }
+  }
+
   return (
     <motion.div
       variants={shouldReduceMotion ? undefined : cardVariants}
@@ -114,16 +156,91 @@ const PricingCard = memo(function PricingCard({
               </svg>
               <span className="group-hover/wa:translate-x-0.5 transition-transform duration-300">Chat on WhatsApp</span>
             </a>
-            <a
-              href="mailto:thethreeamigosdm@gmail.com"
-              className="w-full py-2.5 px-4 bg-slate-50 hover:bg-slate-100 border border-gray-200/50 hover:border-brand-purple/20 text-neutral-black/75 hover:text-brand-purple rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer group/mail"
-            >
-              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                <polyline points="22,6 12,13 2,6" />
-              </svg>
-              <span className="group-hover/mail:translate-x-0.5 transition-transform duration-300">Email Us</span>
-            </a>
+
+            {/* Email Us — Toggleable Inline Email Capture (NO mailto) */}
+            <AnimatePresence mode="wait">
+              {status === 'success' ? (
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="w-full py-2.5 px-3 bg-emerald-50 border border-emerald-200/50 text-emerald-700 rounded-xl font-bold flex items-center justify-center gap-1.5 text-[11px]"
+                >
+                  <svg className="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                    <polyline points="22 4 12 14.01 9 11.01" />
+                  </svg>
+                  <span>{message}</span>
+                </motion.div>
+              ) : isOpen ? (
+                <motion.form
+                  key="email-form"
+                  onSubmit={handleEmailSubmit}
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  className="w-full flex flex-col gap-1.5"
+                >
+                  <div className="flex gap-1.5">
+                    <input
+                      type="email"
+                      placeholder="Enter your email"
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value)
+                        if (status === 'error') setStatus('idle')
+                      }}
+                      disabled={status === 'loading'}
+                      required
+                      autoFocus
+                      className="flex-grow min-w-0 py-2 px-2.5 bg-slate-50 border border-gray-200/50 focus:border-brand-purple/40 focus:ring-1 focus:ring-brand-purple/20 rounded-xl text-xs text-neutral-black placeholder:text-neutral-black/40 font-medium outline-none transition-all duration-300"
+                    />
+                    <motion.button
+                      type="submit"
+                      disabled={status === 'loading'}
+                      whileTap={shouldReduceMotion ? undefined : { scale: 0.95 }}
+                      className="flex-shrink-0 py-2 px-3 bg-brand-gradient text-white rounded-xl text-xs font-bold hover:shadow-md transition-all duration-300 flex items-center justify-center gap-1 cursor-pointer disabled:opacity-60"
+                    >
+                      <span>{status === 'loading' ? '...' : 'Submit'}</span>
+                    </motion.button>
+                  </div>
+
+                  <div className="flex items-center justify-between px-1">
+                    {status === 'error' ? (
+                      <span className="text-[10px] text-brand-red font-semibold">
+                        {message}
+                      </span>
+                    ) : <span />}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsOpen(false)
+                        setStatus('idle')
+                        setMessage('')
+                      }}
+                      className="text-[10px] text-neutral-black/40 hover:text-neutral-black/70 cursor-pointer ml-auto transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </motion.form>
+              ) : (
+                <motion.button
+                  key="email-btn"
+                  type="button"
+                  onClick={() => setIsOpen(true)}
+                  whileTap={shouldReduceMotion ? undefined : { scale: 0.98 }}
+                  className="w-full py-2.5 px-4 bg-slate-50 hover:bg-slate-100 border border-gray-200/50 hover:border-brand-purple/20 text-neutral-black/75 hover:text-brand-purple rounded-xl font-bold transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer group/mail"
+                >
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                    <polyline points="22,6 12,13 2,6" />
+                  </svg>
+                  <span className="group-hover/mail:translate-x-0.5 transition-transform duration-300">Get Started</span>
+                </motion.button>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </div>
